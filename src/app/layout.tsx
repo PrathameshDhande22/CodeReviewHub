@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Footer, Navbar } from "@/components";
 import "./globals.css";
 import { Metadata, Viewport } from "next";
 
@@ -12,6 +11,18 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CodeReviewHub - The Digital Architect",
   description: "The Digital Architect",
+  robots: {
+    follow: true,
+    index: true,
+    googleBot: {
+      index: true,
+    },
+  },
+  applicationName: "CodeReviewHub - The Digital Architect",
+  authors: [
+    { name: "Prathamesh", url: "https://github.com/PrathameshDhande22" },
+  ],
+  creator: "Prathamesh Dhande",
 };
 //#endregion
 
@@ -22,9 +33,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
+      <body className="min-h-screen flex flex-col">
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

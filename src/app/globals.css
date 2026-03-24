@@ -4,4 +4,13 @@
 @theme {
   --color-neutral: #0f172a;
   --color-tertiary: #94a3b8;
+  --color-primary: #8ed5ff;
+}
+
+
+.bg-hero {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(59,130,246,0.18), transparent 40%),
+    radial-gradient(circle at 75% 50%, rgba(14,165,233,0.12), transparent 45%),
+    #020617;
 }

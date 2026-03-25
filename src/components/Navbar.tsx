@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Space_Grotesk } from "next/font/google";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -12,10 +13,15 @@ const space_grotesk = Space_Grotesk({
 //#endregion
 
 const Navbar = () => {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleRegisterClick = () => {
+    router.push("/register");
   };
 
   return (
@@ -79,7 +85,10 @@ const Navbar = () => {
           <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
             LOGIN
           </button>
-          <button className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm">
+          <button
+            className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm"
+            onClick={handleRegisterClick}
+          >
             REGISTER
           </button>
         </div>
@@ -105,7 +114,10 @@ const Navbar = () => {
             <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
               LOGIN
             </button>
-            <button className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm">
+            <button
+              className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm"
+              onClick={handleRegisterClick}
+            >
               REGISTER
             </button>
           </div>

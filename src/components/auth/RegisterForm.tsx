@@ -72,7 +72,7 @@ const RegisterForm = () => {
                 type="text"
                 id="fullname"
                 name="fullname"
-                className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
                 placeholder="Linus Torvalds"
               />
             </div>
@@ -90,7 +90,7 @@ const RegisterForm = () => {
                   type="text"
                   id="username"
                   name="username"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 text-sm focus:ring-primary"
                   placeholder="architect_01"
                 />
               </div>
@@ -106,7 +106,7 @@ const RegisterForm = () => {
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
                   placeholder="dev@hub.io"
                 />
               </div>
@@ -124,7 +124,7 @@ const RegisterForm = () => {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
                   placeholder="••••••••"
                 />
                 <button

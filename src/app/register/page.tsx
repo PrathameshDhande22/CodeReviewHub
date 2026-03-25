@@ -1,7 +1,6 @@
-"use server";
-
 import RegisterForm from "@/components/auth/RegisterForm";
 import CodeSnippet from "@/components/CodeSnippet";
+import { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 
 //#region Font Declaration
@@ -9,6 +8,10 @@ const space_grotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 //#endregion
+
+export const metadata: Metadata = {
+  title: "Register",
+};
 
 export default async function Register() {
   return (

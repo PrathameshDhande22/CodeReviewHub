@@ -10,7 +10,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CodeReviewHub - The Digital Architect",
+  title: {
+    default: "CodeReview Hub - The Digital Architect",
+    template: "%s | CodeReview Hub",
+  },
   description: "The Digital Architect",
   robots: {
     follow: true,

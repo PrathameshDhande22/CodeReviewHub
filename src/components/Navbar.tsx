@@ -24,6 +24,10 @@ const Navbar = () => {
     router.push("/register");
   };
 
+  const handleLoginClick = () => {
+    router.push("/login");
+  };
+
   return (
     <header className="dark:bg-neutral">
       <div
@@ -82,11 +86,14 @@ const Navbar = () => {
         </div>
         {/* Desktop Buttons */}
         <div className="hidden md:flex flex-row gap-2 items-center px-3 text-sm">
-          <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
+          <button
+            className="text-gray-400 font-semibold px-4 py-1 rounded-sm cursor-pointer"
+            onClick={handleLoginClick}
+          >
             LOGIN
           </button>
           <button
-            className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm"
+            className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm cursor-pointer"
             onClick={handleRegisterClick}
           >
             REGISTER
@@ -111,11 +118,14 @@ const Navbar = () => {
             </ul>
           </nav>
           <div className="flex flex-col gap-2 px-4 py-2">
-            <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
+            <button
+              className="text-gray-400 font-semibold px-4 py-1 rounded-sm cursor-pointer"
+              onClick={handleLoginClick}
+            >
               LOGIN
             </button>
             <button
-              className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm"
+              className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm cursor-pointer"
               onClick={handleRegisterClick}
             >
               REGISTER

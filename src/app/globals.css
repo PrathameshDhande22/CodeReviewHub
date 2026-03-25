@@ -2,9 +2,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-neutral: #0f172a;
+  --color-neutral: #0A0E1C;
   --color-tertiary: #94a3b8;
   --color-primary: #8ed5ff;
+  --color-primary-dark: #38BDF8
 }
 
 

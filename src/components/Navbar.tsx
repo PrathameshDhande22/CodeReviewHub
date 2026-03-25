@@ -59,7 +59,7 @@ const Navbar = () => {
             </Link>
           </div>
           {/* Navigation Links - Desktop */}
-          <nav className="hidden md:block pl-2">
+          <nav className="hidden md:block pl-2 text-sm">
             <ul className="text-tertiary font-semibold flex flex-row gap-3">
               <li>
                 <Link href={"/posts"}>
@@ -75,11 +75,11 @@ const Navbar = () => {
           </nav>
         </div>
         {/* Desktop Buttons */}
-        <div className="hidden md:flex flex-row gap-2 items-center px-3">
-          <button className="text-sky-400 font-semibold px-4 py-1 rounded-sm">
+        <div className="hidden md:flex flex-row gap-2 items-center px-3 text-sm">
+          <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
             LOGIN
           </button>
-          <button className="bg-sky-400 font-semibold px-4 py-1 rounded-sm">
+          <button className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm">
             REGISTER
           </button>
         </div>
@@ -102,10 +102,10 @@ const Navbar = () => {
             </ul>
           </nav>
           <div className="flex flex-col gap-2 px-4 py-2">
-            <button className="text-sky-400 font-semibold px-4 py-1 rounded-sm">
+            <button className="text-gray-400 font-semibold px-4 py-1 rounded-sm">
               LOGIN
             </button>
-            <button className="bg-sky-400 font-semibold px-4 py-1 rounded-sm">
+            <button className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm">
               REGISTER
             </button>
           </div>

@@ -1,6 +1,7 @@
-import { Footer, Navbar } from "@/components";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 import { Metadata, Viewport } from "next";
+import Footer from "@/components/Footer";
 
 //#region SEO Metadata
 export const viewport: Viewport = {

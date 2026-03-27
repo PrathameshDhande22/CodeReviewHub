@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   poweredByHeader:false,
   reactCompiler: true,
-  cacheComponents: true,
+  // cacheComponents: true,
   compiler:{
     removeConsole:true,
   }

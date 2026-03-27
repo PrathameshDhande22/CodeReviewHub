@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaArrowRight, FaGoogle } from "react-icons/fa";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import FormField from "@/components/auth/FormField";
+import Divider from "../Divider";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -32,36 +34,29 @@ const LoginForm = () => {
           action=""
           className={`${inter.className} text-gray-400 space-y-5`}
         >
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="text-sm tracking-wider w-full">
-              EMAIL
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="dev@codereview.hub"
-            />
-          </div>
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="text-sm tracking-wider w-full">
-              PASSWORD
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="••••••••"
-              />
+          <FormField
+            label="EMAIL"
+            htmlFor="email"
+            inputProps={{
+              type: "email",
+              name: "email",
+              placeholder: "dev@codereview.hub",
+            }}
+          />
+
+          <FormField
+            label="PASSWORD"
+            htmlFor="password"
+            inputProps={{
+              type: showPassword ? "text" : "password",
+              name: "password",
+              placeholder: "••••••••",
+            }}
+            extra={
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
               >
                 {showPassword ? (
                   <MdOutlineVisibilityOff size={20} />
@@ -69,9 +64,9 @@ const LoginForm = () => {
                   <MdOutlineVisibility size={20} />
                 )}
               </button>
-            </div>
-          </div>
-          {/* SignIn Button */}
+            }
+          />
+
           <div>
             <button
               className={`${space_grotesk.className} text-black w-full py-4 rounded-xs bg-linear-to-r from-primary to-primary-dark space-x-3 font-bold`}
@@ -81,31 +76,19 @@ const LoginForm = () => {
             </button>
           </div>
         </form>
+
         {/* Divider */}
-        <div className="flex flex-row items-center gap-3">
-          <div className="bg-gray-800 h-px flex-1" />
-          <span
-            className={`${jetbrains_mono.className} text-gray-400 text-sm font-light tracking-widest`}
-          >
-            OR CONTINUE WITH
-          </span>
-          <div className="bg-gray-800 h-px flex-1" />
-        </div>
+        <Divider
+          className={`${jetbrains_mono.className} text-gray-400 text-sm font-light tracking-widest`}
+          text="OR CONTINUE WITH"
+        />
+
         {/* External Logins */}
+        {/* TODO: GEt the Providers from the Auth.ts file when implementing the functionality  */}
         <div className="flex flex-row gap-3">
-          {/* TODO: GEt the Providers from the Auth.ts file when implementing the functionality  */}
           <button className="bg-[#232d44] text-white px-6 py-4 w-full rounded-xl text-sm flex flex-row items-center justify-center gap-2">
             <FaGoogle size={20} />
           </button>
-        </div>
-        {/* do not have account */}
-        <div className={`${inter.className} text-gray-400 text-sm text-center`}>
-          <p className="space-x-1">
-            <span>Don't have an account?</span>
-            <Link href={"/register"} className="text-primary hover:underline">
-              Register
-            </Link>
-          </p>
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ import { FaArrowRight, FaGoogle } from "react-icons/fa";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { useState } from "react";
 import Link from "next/link";
+import FormField from "@/components/auth/FormField";
+import Divider from "../Divider";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -25,7 +27,7 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <div className={`${space_grotesk.className} h-full p-6`}>
+    <div className={`${space_grotesk.className}`}>
       <div className="flex flex-col gap-5">
         {/* Register title */}
         <div className="space-y-3">
@@ -44,15 +46,10 @@ const RegisterForm = () => {
           </button>
         </div>
         {/* Divider */}
-        <div className="flex flex-row items-center gap-3">
-          <div className="bg-gray-800 h-px flex-1" />
-          <span
-            className={`${jetbrains_mono.className} text-gray-400 text-sm font-light tracking-widest`}
-          >
-            OR USE CREDENTIALS
-          </span>
-          <div className="bg-gray-800 h-px flex-1" />
-        </div>
+        <Divider
+          text="OR USE CREDENTIALS"
+          className={`${jetbrains_mono.className} text-gray-400 text-sm font-light tracking-widest`}
+        />
         {/* Register Form */}
         <div>
           {/* TODO: Implement the Form afterwards */}
@@ -61,76 +58,56 @@ const RegisterForm = () => {
             className={`${inter.className} text-gray-400 space-y-5`}
           >
             {/* full name */}
-            <div>
-              <label
-                htmlFor="fullname"
-                className="text-sm tracking-wider w-full"
-              >
-                FULL NAME
-              </label>
-              <input
-                type="text"
-                id="fullname"
-                name="fullname"
-                className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
-                placeholder="Linus Torvalds"
-              />
-            </div>
+            <FormField
+              label="FULL NAME"
+              htmlFor="fullname"
+              inputProps={{
+                type: "text",
+                name: "fullname",
+                placeholder: "Linus Torvalds",
+              }}
+            />
             {/* Username and Email */}
             <div className="flex flex-row gap-3">
               {/* Username */}
               <div className="w-full">
-                <label
+                <FormField
+                  label="USERNAME"
                   htmlFor="username"
-                  className="text-sm tracking-wider w-full"
-                >
-                  USERNAME
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 text-sm focus:ring-primary"
-                  placeholder="architect_01"
+                  inputProps={{
+                    type: "text",
+                    name: "username",
+                    placeholder: "architect_01",
+                  }}
                 />
               </div>
               {/* Email */}
               <div className="w-full">
-                <label
+                <FormField
+                  label="EMAIL"
                   htmlFor="email"
-                  className="text-sm tracking-wider w-full"
-                >
-                  EMAIL
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
-                  placeholder="dev@hub.io"
+                  inputProps={{
+                    type: "email",
+                    name: "email",
+                    placeholder: "dev@hub.io",
+                  }}
                 />
               </div>
             </div>
             {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="text-sm tracking-wider w-full"
-              >
-                PASSWORD
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  className="w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none text-sm focus:ring-2 focus:ring-primary"
-                  placeholder="••••••••"
-                />
+            <FormField
+              label="PASSWORD"
+              htmlFor="password"
+              inputProps={{
+                type: showPassword ? "text" : "password",
+                name: "password",
+                placeholder: "••••••••",
+              }}
+              extra={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
                   {showPassword ? (
                     <MdOutlineVisibilityOff size={20} />
@@ -138,8 +115,8 @@ const RegisterForm = () => {
                     <MdOutlineVisibility size={20} />
                   )}
                 </button>
-              </div>
-            </div>
+              }
+            />
             {/* Create Button */}
             <div>
               <button
@@ -150,28 +127,6 @@ const RegisterForm = () => {
               </button>
             </div>
           </form>
-        </div>
-        {/* terms and conditions */}
-        <div className={`${inter.className} text-gray-500 text-xs text-center`}>
-          <p className="space-x-1">
-            <span>By signing up, you agree to the</span>
-            <Link href={"/terms"} className="text-primary hover:underline">
-              Terms of Service
-            </Link>
-            <span>and acknowledge our</span>
-            <Link href={"/privacy"} className="text-primary hover:underline">
-              Privacy Policy.
-            </Link>
-          </p>
-        </div>
-        {/* Already have Account */}
-        <div className={`${inter.className} text-gray-400 text-sm text-center`}>
-          <p className="space-x-1">
-            <span>Already have an account?</span>
-            <Link href={"/login"} className="text-primary hover:underline">
-              Login
-            </Link>
-          </p>
         </div>
       </div>
     </div>

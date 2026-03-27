@@ -39,7 +39,20 @@ export default async function Register() {
         </div>
         {/* Command */}
         <div>
-          <CodeSnippet />
+          <CodeSnippet title={""}>
+            <>
+              <p>
+                <span className="text-primary">git commit -m</span>{" "}
+                <span className="text-gray-200">
+                  "feat: architect_onboarding"
+                </span>
+              </p>
+
+              <p className="text-gray-400 mt-2">
+                Waiting for user authentication...
+              </p>
+            </>
+          </CodeSnippet>
         </div>
       </div>
       {/* Right Side - Register Form */}

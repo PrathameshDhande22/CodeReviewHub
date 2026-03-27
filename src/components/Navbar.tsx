@@ -93,7 +93,7 @@ const Navbar = () => {
             LOGIN
           </button>
           <button
-            className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 rounded-sm cursor-pointer"
+            className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-2 text-black rounded-sm cursor-pointer"
             onClick={handleRegisterClick}
           >
             REGISTER
@@ -125,7 +125,7 @@ const Navbar = () => {
               LOGIN
             </button>
             <button
-              className="bg-linear-to-r from-primary to-primary-dark font-semibold px-4 py-1 rounded-sm cursor-pointer"
+              className="bg-linear-to-r from-primary text-black to-primary-dark font-semibold px-4 py-1 rounded-sm cursor-pointer"
               onClick={handleRegisterClick}
             >
               REGISTER

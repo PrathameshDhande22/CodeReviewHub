@@ -18,9 +18,11 @@ export const metadata: Metadata = {
 
 export default async function Login() {
   return (
-    <div className={`bg-hero ${space_grotesk.className} h-full w-full`}>
-      <div className="bg-[#141927]">
-        <div className="">
+    <div
+      className={`bg-hero ${space_grotesk.className} h-[80vh] w-full flex items-center justify-center`}
+    >
+      <div className="bg-[#141927] rounded-2xl shadow-xl w-full max-w-md p-8">
+        <div>
           <h1 className="text-xl text-gray-200 font-semibold">Welcome back</h1>
           <span
             className={`${inter.className} text-gray-300 font-light text-sm`}
@@ -29,7 +31,7 @@ export default async function Login() {
           </span>
         </div>
         {/* Login Form */}
-        <div>
+        <div className="mt-5 w-full">
           <LoginForm />
         </div>
       </div>

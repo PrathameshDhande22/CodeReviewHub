@@ -2,11 +2,13 @@
 
 import { InputHTMLAttributes, ReactNode } from "react";
 import Input from "@/components/UI/Input";
+import { UseFormRegister } from "react-hook-form";
 
 type FormFieldProps = {
   label: string;
   htmlFor: string;
   inputProps: InputHTMLAttributes<HTMLInputElement>;
+  register?: ReturnType<UseFormRegister<any>>;
   extra?: ReactNode;
   className?: string;
 };
@@ -17,6 +19,7 @@ const FormField = ({
   inputProps,
   extra,
   className = "",
+  register,
 }: FormFieldProps) => {
   return (
     <div className={className}>
@@ -24,7 +27,7 @@ const FormField = ({
         {label}
       </label>
       <div className="relative">
-        <Input id={htmlFor} {...inputProps} />
+        <Input id={htmlFor} {...inputProps} {...register} />
         {extra}
       </div>
     </div>

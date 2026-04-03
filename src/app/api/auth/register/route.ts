@@ -1,21 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma";
 import { hash } from "bcryptjs";
 import { registerSchema } from "@/schemas";
 import status from "http-status";
-import { NextApiRequest } from "next";
+import { RegisterResponse } from "@/types";
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.body;
+    const body = await request.json();
     const data = registerSchema.parse(body);
 
     const existingEmail = await prisma.user.findUnique({
       where: { email: data.email },
     });
     if (existingEmail) {
-      return NextResponse.json(
-        { error: "Email already in use" },
+      return NextResponse.json<RegisterResponse>(
+        { error: "Email already in use", success: false },
         { status: status.CONFLICT },
       );
     }
@@ -24,8 +24,8 @@ export async function POST(request: NextApiRequest) {
       ? await prisma.user.findUnique({ where: { username: data.username } })
       : null;
     if (existingUsername) {
-      return NextResponse.json(
-        { error: "Username already in use" },
+      return NextResponse.json<RegisterResponse>(
+        { error: "Username already in use", success: false },
         { status: status.CONFLICT },
       );
     }
@@ -36,27 +36,27 @@ export async function POST(request: NextApiRequest) {
       data: {
         name: data.fullname,
         username: data.username,
-        emailVerified: Date.now().toString(),
         email: data.email,
         password: passwordHash,
       },
     });
 
-    return NextResponse.json(
+    return NextResponse.json<RegisterResponse>(
       { success: true },
       {
         status: status.OK,
       },
     );
   } catch (err: unknown) {
+    console.log(err)
     if (err instanceof Error) {
-      return NextResponse.json(
-        { error: err.message },
-        { status: status.BAD_REQUEST },
+      return NextResponse.json<RegisterResponse>(
+        { error: "Internal Server Error", success: false },
+        { status: status.INTERNAL_SERVER_ERROR },
       );
     }
-    return NextResponse.json(
-      { error: "Unable to register" },
+    return NextResponse.json<RegisterResponse>(
+      { error: "Unable to register", success: false },
       { status: status.INTERNAL_SERVER_ERROR },
     );
   }

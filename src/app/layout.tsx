@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import { Metadata, Viewport } from "next";
 import Footer from "@/components/Footer";
+import { ToastContainer } from "react-toastify";
 
 //#region SEO Metadata
 export const viewport: Viewport = {
@@ -42,6 +43,19 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-hero text-white">
         <Navbar />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          limit={3}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

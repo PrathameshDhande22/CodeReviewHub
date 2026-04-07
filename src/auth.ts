@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, getServerSession } from "next-auth";
 import type { User as PrismaUser } from "../generated/prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -8,6 +8,10 @@ import { compare } from "bcryptjs";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
+  secret:
+    process.env.AUTH_SECRET ??
+    process.env.NEXTAUTH_SECRET ??
+    process.env.BETTER_AUTH_SECRET,
   session: {
     strategy: "jwt",
   },
@@ -82,3 +86,18 @@ export const authOptions: AuthOptions = {
 const handler = NextAuth(authOptions);
 export const GET = handler;
 export const POST = handler;
+
+export const getOptionalServerSession = async () => {
+  try {
+    return await getServerSession(authOptions);
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.name === "JWEDecryptionFailed"
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
+};

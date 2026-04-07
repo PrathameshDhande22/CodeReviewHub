@@ -1,8 +1,10 @@
 import RegisterForm from "@/components/auth/RegisterForm";
+import { getOptionalServerSession } from "@/auth";
 import CodeSnippet from "@/components/CodeSnippet";
 import { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -19,6 +21,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Register() {
+  const session = await getOptionalServerSession();
+  if (session?.user) {
+    redirect("/");
+  }
+
   return (
     <div className={`${space_grotesk.className} flex h-full`}>
       {/* Left Side - Website Details */}
@@ -44,7 +51,7 @@ export default async function Register() {
               <p>
                 <span className="text-primary">git commit -m</span>{" "}
                 <span className="text-gray-200">
-                  "feat: architect_onboarding"
+                  &quot;feat: architect_onboarding&quot;
                 </span>
               </p>
 

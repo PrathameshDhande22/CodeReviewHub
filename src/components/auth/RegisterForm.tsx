@@ -5,7 +5,6 @@ import { FaArrowRight, FaGoogle } from "react-icons/fa";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import FormField from "@/components/auth/FormField";
 import Divider from "../Divider";
 import { registerUser } from "@/api/auth/register";

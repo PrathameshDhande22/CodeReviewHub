@@ -1,7 +1,9 @@
 import LoginForm from "@/components/auth/LoginForm";
+import { getOptionalServerSession } from "@/auth";
 import { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -18,6 +20,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Login() {
+  const session = await getOptionalServerSession();
+  if (session?.user) {
+    redirect("/");
+  }
+
   return (
     <div
       className={`bg-hero ${space_grotesk.className} h-[85vh] w-full flex items-center justify-center`}
@@ -39,7 +46,7 @@ export default async function Login() {
             className={`${inter.className} mt-4 text-gray-400 text-sm text-center`}
           >
             <p className="space-x-1">
-              <span>Don't have an account?</span>
+              <span>Don&apos;t have an account?</span>
               <Link href="/register" className="text-primary hover:underline">
                 Register
               </Link>

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma";
-import { hash } from "bcryptjs";
 import { registerSchema } from "@/schemas";
 import status from "http-status";
 import { RegisterResponse } from "@/types";
+import { hash } from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {

@@ -189,15 +189,6 @@ const RegisterForm = () => {
             </button>
           </div>
         </form>
-
-        <div className={`${inter.className} text-gray-400 text-sm text-center`}>
-          <p className="space-x-1">
-            <span>Already have an account?</span>
-            <Link href="/login" className="text-primary hover:underline">
-              Login
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );

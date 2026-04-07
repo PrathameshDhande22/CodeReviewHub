@@ -3,6 +3,7 @@ import "./globals.css";
 import { Metadata, Viewport } from "next";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
+import Providers from "@/providers/provider";
 
 //#region SEO Metadata
 export const viewport: Viewport = {
@@ -42,22 +43,24 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col bg-hero text-white">
-        <Navbar />
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          limit={3}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            limit={3}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

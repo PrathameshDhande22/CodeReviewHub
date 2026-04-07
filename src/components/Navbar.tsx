@@ -46,6 +46,11 @@ const Navbar = () => {
     signOut();
   };
 
+  const handleProfileClick = () => {
+    setShowDropdown(false);
+    router.push("/profile");
+  }
+
   useEffect(() => {
     if (!showDropdown) {
       return;
@@ -152,6 +157,13 @@ const Navbar = () => {
               <button
                 type="button"
                 className="block px-4 py-2 text-left text-gray-300 hover:bg-gray-700 cursor-pointer w-full text-sm"
+                onClick={handleProfileClick}
+              >
+                Profile
+              </button>
+              <button
+                type="button"
+                className="block px-4 py-2 text-left text-gray-300 hover:bg-gray-700 cursor-pointer w-full text-sm"
                 onClick={handleLogout}
               >
                 Logout
@@ -219,6 +231,13 @@ const Navbar = () => {
                 role="menu"
               >
                 <button
+                  type="button"
+                  className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700"
+                  onClick={handleProfileClick}
+                >
+                  Profile
+                </button>
+                 <button
                   type="button"
                   className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700"
                   onClick={handleLogout}

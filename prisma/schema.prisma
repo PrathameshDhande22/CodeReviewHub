@@ -8,19 +8,22 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  username      String?         @unique
-  email         String          @unique
+  username      String?   @unique
+  email         String    @unique
   password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  posts         Post[]
+  comments      Comment[]
+  reviews       Review[]
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -33,29 +36,111 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
+}
+
+enum CodeStatus {
+  OPEN
+  ACCEPTED
+  CLOSED
+}
+
+model Post {
+  id               String     @id @default(cuid())
+  title            String
+  description      String?
+  published        Boolean    @default(false)
+  language         String
+  code             String?    @db.Text
+  blobUrl          String?
+  requireReview    Boolean    @default(true)
+  acceptedReviewId String?
+  requireComments  Boolean    @default(true)
+  authorId         String
+  author           User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  status           CodeStatus @default(OPEN)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+  postTags  PostTag[]
+  reviews   Review[]
+}
+
+model Review {
+  id         String  @id @default(cuid())
+  content    String
+  rating     Int
+  isAccepted Boolean @default(false)
+
+  postId     String
+  reviewerId String
+  post       Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reviewer   User   @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+
+  @@unique([postId, reviewerId]) // one review per user per post
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String
+  lineno  Int?
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Comment?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("Replies")
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  postTags PostTag[]
+}
+
+model PostTag {
+  id     String @id @default(cuid())
+  postId String
+  tagId  Int
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }

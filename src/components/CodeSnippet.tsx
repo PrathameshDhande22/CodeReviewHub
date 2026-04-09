@@ -15,7 +15,7 @@ interface CodeSnippetProps {
 
 const CodeSnippet = ({ children, title }: CodeSnippetProps) => {
   return (
-    <div className="bg-[#141a27] rounded-xl p-4 w-full max-w-md shadow-lg">
+    <div className="bg-[#141a27] rounded-xl p-4 w-full shadow-lg">
       {/* TOP bar */}
       <div className="flex items-center mb-3 gap-3">
         <div className="flex gap-2">

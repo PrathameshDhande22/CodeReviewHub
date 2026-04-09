@@ -49,7 +49,12 @@ const Navbar = () => {
   const handleProfileClick = () => {
     setShowDropdown(false);
     router.push("/profile");
-  }
+  };
+
+  const handleNewReviewClick = () => {
+    setShowDropdown(false);
+    router.push("/post");
+  };
 
   useEffect(() => {
     if (!showDropdown) {
@@ -164,6 +169,13 @@ const Navbar = () => {
               <button
                 type="button"
                 className="block px-4 py-2 text-left text-gray-300 hover:bg-gray-700 cursor-pointer w-full text-sm"
+                onClick={handleNewReviewClick}
+              >
+                New Review
+              </button>
+              <button
+                type="button"
+                className="block px-4 py-2 text-left text-gray-300 hover:bg-gray-700 cursor-pointer w-full text-sm"
                 onClick={handleLogout}
               >
                 Logout
@@ -237,7 +249,14 @@ const Navbar = () => {
                 >
                   Profile
                 </button>
-                 <button
+                <button
+                  type="button"
+                  className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700"
+                  onClick={handleNewReviewClick}
+                >
+                  New Review
+                </button>
+                <button
                   type="button"
                   className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700"
                   onClick={handleLogout}

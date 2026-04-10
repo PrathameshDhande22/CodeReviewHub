@@ -33,4 +33,5 @@ export const PostSchema = z
       });
     }
   });
-export type PostReview = z.infer<typeof PostSchema>;
+export type PostReview = z.output<typeof PostSchema>;
+export type PostReviewInput = z.input<typeof PostSchema>;

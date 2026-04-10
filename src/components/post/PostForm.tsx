@@ -1,14 +1,23 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import FormField from "../auth/FormField";
-import { PostReview } from "@/schemas/post";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { PostReviewInput, PostSchema } from "@/schemas/post";
+import { Inter, Space_Grotesk } from "next/font/google";
 import { MdUploadFile } from "react-icons/md";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Monaco, OnMount } from "@monaco-editor/react";
 import CodeSnippet from "../CodeSnippet";
+import { getLanguages } from "@/api/language";
+import Select from "react-select";
+import Creatable from "react-select/creatable";
+import type { MultiValue } from "react-select";
+import Switch from "../UI/Switch";
+import { getTags } from "@/api/tag";
+import type { Tag } from "@generated/prisma/client";
+import { DevTool } from "@hookform/devtools";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -18,63 +27,67 @@ const space_grotesk = Space_Grotesk({
 const inter = Inter({
   subsets: ["latin"],
 });
-
-const jetbrains_mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: "400",
-});
 //#endregion
 
 //#region Dynamic Import
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 //#endregion
 
-const languages: string[] = [
-  "JavaScript",
-  "TypeScript",
-  "Python",
-  "Java",
-  "C++",
-  "Go",
-  "Rust",
-  "Ruby",
-  "PHP",
-  "C#",
-  "Swift",
-  "Kotlin",
-  "Scala",
-  "Perl",
-  "Haskell",
-  "Lua",
-  "Dart",
-  "Elixir",
-  "Clojure",
-  "F#",
-  "Erlang",
-];
+type SelectOption = {
+  value: string;
+  label: string;
+};
 
 const PostForm = () => {
   //#region React Hook form
   const {
+    control,
     register,
+    handleSubmit,
     formState: { errors },
-  } = useForm<PostReview>({
+  } = useForm<PostReviewInput>({
     mode: "onTouched",
+    resolver: zodResolver(PostSchema),
+    defaultValues: {
+      language: "",
+      requireReview: false,
+      inlineFeedback: false,
+      draft: false,
+      tags: [],
+    },
   });
 
   //#endregion
 
+  //#region State
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  //#endregion
+
+  useEffect(() => {
+    // fetch the languages
+    getLanguages()
+      .then(setLanguages)
+      .catch((err) => {
+        console.error("Failed to fetch languages:", err);
+      });
+
+    // fetch the tags
+    getTags()
+      .then(setTags)
+      .catch((err) => {
+        console.error("Failed to fetch tags:", err);
+      });
+  }, []);
+
+  //#region Monaco Editor
   const monacoRef = useRef<Monaco | null>(null);
 
-  function handleEditorDidMount(editor: any, monaco: Monaco) {
-    console.log("Editor mounted:", editor);
+  const handleEditorDidMount: OnMount = (_editor, monaco: Monaco) => {
     monacoRef.current = monaco;
-    console.log(monaco);
-  }
+  };
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(typeof e)
-    const language = e.target.value;
+  const handleLanguageChange = (language: string) => {
     if (monacoRef.current) {
       monacoRef.current?.editor.setModelLanguage(
         monacoRef.current.editor.getModels()[0],
@@ -82,11 +95,33 @@ const PostForm = () => {
       );
     }
   };
+  //#endregion
+
+  const languageOptions = languages.map((language) => ({
+    value: language,
+    label: language,
+  }));
+
+  const tagOptions: SelectOption[] = tags.map((tag) => ({
+    value: String(tag.id),
+    label: tag.name,
+  }));
+
+  const getSelectedTagOptions = (selectedTags: string[] = []) =>
+    selectedTags.map((tag) => ({
+      value: tag,
+      label: tag,
+    }));
+
+  const onSubmit = (data: PostReviewInput) => {
+    console.log("Form Data:", data);
+    // Here you can handle the form submission, e.g., send the data to your API
+  };
 
   return (
     <div className="mt-8">
       <div>
-        <form action="">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col lg:flex-row gap-10 w-full">
             {/* Left Side */}
             <div className="space-y-4 w-full">
@@ -166,16 +201,26 @@ const PostForm = () => {
                   />
                 </CodeSnippet>
               </div>
+              {/* Submit button */}
+              <div>
+                <button
+                  type="submit"
+                  className={`py-3 px-8 bg-linear-to-r from-primary to-primary-dark ${inter.className} cursor-pointer text-black text-sm rounded-md font-semibold uppercase`}
+                >
+                  Deploy to Hub
+                </button>
+              </div>
             </div>
             {/* Right Side */}
             <div
-              className={`${inter.className} bg-[#1c2436] rounded-xl p-4 lg:w-96 w-full h-fit`}
+              className={`${inter.className} bg-[#1c2436] rounded-xl p-4 lg:w-96 w-full h-fit space-y-4`}
             >
               <h3
-                className={`${space_grotesk.className} font-semibold text-sm text-primary tracking-wider`}
+                className={`${space_grotesk.className} font-semibold text-sm text-primary tracking-wider mb-7`}
               >
                 CONFIGURATION
               </h3>
+              {/* Language Selection */}
               <div>
                 <label
                   htmlFor="language"
@@ -183,24 +228,180 @@ const PostForm = () => {
                 >
                   LANGAUGE
                 </label>
-                <select
-                  className={`block w-full text-xs p-2 mt-1 rounded-lg bg-[#131823] text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary" ${inter.className}`}
-                  id="language"
-                  {...register("language")}
-                  onChange={handleLanguageChange}
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      inputId="language"
+                      options={languageOptions}
+                      value={
+                        languageOptions.find(
+                          (option) => option.value === field.value,
+                        ) ?? null
+                      }
+                      onChange={(selectedOption) => {
+                        const language = selectedOption?.value ?? "";
+                        field.onChange(language);
+                        handleLanguageChange(language);
+                      }}
+                      onBlur={field.onBlur}
+                      placeholder="Select a language"
+                      unstyled
+                      className={`mt-1 ${inter.className} text-sm`}
+                      classNames={{
+                        control: (state) =>
+                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${
+                            state.isFocused
+                              ? "ring-2 ring-primary outline-none"
+                              : ""
+                          }`,
+                        valueContainer: () => "gap-2 py-0",
+                        singleValue: () => "text-white",
+                        placeholder: () => "text-slate-400",
+                        input: () => "text-white",
+                        indicatorsContainer: () => "text-slate-300",
+                        indicatorSeparator: () => "hidden",
+                        dropdownIndicator: () =>
+                          "text-slate-300 hover:text-white",
+                        clearIndicator: () => "text-slate-300 hover:text-white",
+                        menu: () =>
+                          "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
+                        menuList: () => "py-1",
+                        option: (state) =>
+                          `cursor-pointer px-3 py-2 text-sm text-white ${
+                            state.isFocused ? "bg-[#33415c]" : ""
+                          } ${state.isSelected ? "bg-primary text-black" : ""}`,
+                        noOptionsMessage: () => "px-3 py-2 text-slate-400",
+                      }}
+                    />
+                  )}
+                />
+                {errors.language && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.language.message}
+                  </p>
+                )}
+              </div>
+              {/* Boolean Checks */}
+              <div className="flex flex-row items-center justify-between gap-2">
+                <label htmlFor="review" className="text-slate-300 text-sm">
+                  Require Review
+                </label>
+                <Controller
+                  name="requireReview"
+                  control={control}
+                  render={({ field }) => (
+                    <Switch
+                      id="review"
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
+              </div>
+              {/* Inline Comments */}
+              <div className="flex flex-row items-center justify-between gap-2">
+                <label htmlFor="inline" className="text-slate-300 text-sm">
+                  Enable Inline Comments
+                </label>
+                <Controller
+                  name="inlineFeedback"
+                  control={control}
+                  render={({ field }) => (
+                    <Switch
+                      id="inline"
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
+              </div>
+              {/* Tags */}
+              <div>
+                <label
+                  htmlFor="tags"
+                  className="text-slate-300 text-xs uppercase"
                 >
-                  <option value="" className={inter.className}>
-                    Select
-                  </option>
-                  {languages.map((lang) => (
-                    <option key={lang} className={inter.className} value={lang}>
-                      {lang}
-                    </option>
-                  ))}
-                </select>
+                  Tags
+                </label>
+                <Controller
+                  name="tags"
+                  control={control}
+                  render={({ field }) => (
+                    <Creatable
+                      inputId="tags"
+                      options={tagOptions}
+                      value={getSelectedTagOptions(field.value)}
+                      isMulti
+                      isClearable
+                      onChange={(selectedOption) => {
+                        console.log("selectedOpt", selectedOption);
+                        const selectedTags = (
+                          selectedOption as MultiValue<SelectOption>
+                        ).map((option) => option.value);
+                        field.onChange(selectedTags);
+                      }}
+                      onBlur={field.onBlur}
+                      placeholder="Select tags"
+                      unstyled
+                      className={`mt-1 ${inter.className} text-sm`}
+                      classNames={{
+                        control: (state) =>
+                          `bg-[#191f2c] text-white rounded-lg min-h-[35px] px-3`,
+                        valueContainer: () => "gap-2 py-0",
+                        multiValue: () => "bg-slate-300 px-2 py-1",
+                        multiValueLabel: () =>
+                          `text-xs text-black ${inter.className} uppercase`,
+                        multiValueRemove: () => "text-black text-xs ps-1",
+                        placeholder: () => "text-slate-400",
+                        input: () => "text-white",
+                        indicatorsContainer: () => "text-slate-300",
+                        indicatorSeparator: () => "hidden",
+                        dropdownIndicator: () =>
+                          "text-slate-300 hover:text-white",
+                        clearIndicator: () => "text-slate-300 hover:text-white",
+                        menu: () =>
+                          "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
+                        menuList: () => "py-1",
+                        option: (state) =>
+                          `cursor-pointer px-3 py-2 text-sm text-white ${
+                            state.isFocused ? "bg-[#33415c]" : ""
+                          } ${state.isSelected ? "bg-primary text-black" : ""}`,
+                        noOptionsMessage: () => "px-3 py-2 text-slate-400",
+                      }}
+                    />
+                  )}
+                />
+                {errors.tags && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.tags.message}
+                  </p>
+                )}
+              </div>
+              {/* Draft */}
+              <div className="flex flex-row items-center justify-between gap-2">
+                <label htmlFor="draft" className="text-slate-300 text-sm">
+                  Draft
+                </label>
+                <Controller
+                  name="draft"
+                  control={control}
+                  render={({ field }) => (
+                    <Switch
+                      id="draft"
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
               </div>
             </div>
           </div>
+          <DevTool control={control} />
         </form>
       </div>
     </div>

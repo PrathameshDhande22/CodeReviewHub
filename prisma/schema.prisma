@@ -144,3 +144,9 @@ model PostTag {
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
+
+model Languages{
+  id  Int    @id @default(autoincrement())
+  name String @unique
+  extension String 
+}

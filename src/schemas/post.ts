@@ -13,8 +13,8 @@ export const PostSchema = z
     code: z.string().nullable(),
     codefile: z.file().nullable(),
     language: z.string(),
-    inlineFeedback: z.boolean(),
-    requireReview: z.boolean(),
+    inlineFeedback: z.boolean().default(true),
+    requireReview: z.boolean().default(true),
     draft: z.boolean().default(false),
     tags: z.array(z.string()).min(1, "Minimum one Tag is required"),
   })

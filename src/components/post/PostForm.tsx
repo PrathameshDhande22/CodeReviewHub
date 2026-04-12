@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import FormField from "../auth/FormField";
 import { PostReviewInput, PostSchema } from "@/schemas/post";
 import { Inter, Space_Grotesk } from "next/font/google";
@@ -16,7 +16,7 @@ import Creatable from "react-select/creatable";
 import type { MultiValue } from "react-select";
 import Switch from "../UI/Switch";
 import { getTags } from "@/api/tag";
-import type { Tag } from "@generated/prisma/client";
+import type { Languages, Tag } from "@generated/prisma/client";
 import { DevTool } from "@hookform/devtools";
 
 //#region Font Declaration
@@ -44,14 +44,17 @@ const PostForm = () => {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<PostReviewInput>({
     mode: "onTouched",
     resolver: zodResolver(PostSchema),
     defaultValues: {
+      code: "",
+      codefile: null,
       language: "",
-      requireReview: false,
-      inlineFeedback: false,
+      requireReview: true,
+      inlineFeedback: true,
       draft: false,
       tags: [],
     },
@@ -60,10 +63,28 @@ const PostForm = () => {
   //#endregion
 
   //#region State
-  const [languages, setLanguages] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<Languages[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   //#endregion
 
+  const uploadedCodeFile = useWatch({ control, name: "codefile" });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleLanguageChangeOnFileUpload = (filename: string) => {
+    const extension = "." + filename.split(".")[1];
+    const language = languages.find((lang) => lang.extension === extension);
+
+    if (language) {
+      setValue("language", language.name, {
+        shouldTouch: true,
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      handleLanguageChange(language.name);
+    }
+  };
+
+  //#region Use Effects
   useEffect(() => {
     // fetch the languages
     getLanguages()
@@ -79,6 +100,7 @@ const PostForm = () => {
         console.error("Failed to fetch tags:", err);
       });
   }, []);
+  //#endregion
 
   //#region Monaco Editor
   const monacoRef = useRef<Monaco | null>(null);
@@ -95,12 +117,24 @@ const PostForm = () => {
       );
     }
   };
+
+  const handleCodeEditorValueChange = (value: string | undefined) => {
+    setValue("code", String(value ?? ""), {
+      shouldTouch: true,
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
   //#endregion
 
   const languageOptions = languages.map((language) => ({
-    value: language,
-    label: language,
+    value: language.name,
+    label: language.name.toUpperCase(),
   }));
+
+  const allowedExtensions = languages
+    .map((language) => language.extension)
+    .join(",");
 
   const tagOptions: SelectOption[] = tags.map((tag) => ({
     value: String(tag.id),
@@ -108,10 +142,13 @@ const PostForm = () => {
   }));
 
   const getSelectedTagOptions = (selectedTags: string[] = []) =>
-    selectedTags.map((tag) => ({
-      value: tag,
-      label: tag,
-    }));
+    selectedTags.map((tag) => {
+      const selectedTagOption = tagOptions.find(
+        (option) => option.value === tag,
+      );
+
+      return selectedTagOption ?? { value: tag, label: tag };
+    });
 
   const onSubmit = (data: PostReviewInput) => {
     console.log("Form Data:", data);
@@ -160,7 +197,7 @@ const PostForm = () => {
                     className={`w-full ${inter.className} text-sm w-full p-3 mt-1 rounded-lg bg-[#1c2436] text-white focus:outline-none focus:ring-2 focus:ring-primary`}
                     placeholder="eg. What is the impact of this memory leak?"
                     rows={5}
-                    {...register("description", { required: true })}
+                    {...register("description")}
                   ></textarea>
                   <div>
                     {errors.description && (
@@ -183,13 +220,49 @@ const PostForm = () => {
                   <div>
                     <button
                       type="button"
-                      className={`flex flex-row gap-1 py-1.5 text-sm px-4 rounded-2xl items-center bg-[#283349] ${inter.className} text-primary`}
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`flex flex-row gap-1 py-1.5 text-sm px-4 rounded-2xl items-center bg-[#283349] ${inter.className} text-primary cursor-pointer hover:bg-[#283349]/80`}
                     >
                       <MdUploadFile size={20} />
                       <span className="ml-2 text-sm">UPLOAD FILE</span>
                     </button>
                   </div>
                 </div>
+                <Controller
+                  name="codefile"
+                  control={control}
+                  render={({ field: { onChange, onBlur, ref, name } }) => (
+                    <input
+                      ref={(element) => {
+                        ref(element);
+                        fileInputRef.current = element;
+                      }}
+                      name={name}
+                      accept={allowedExtensions}
+                      type="file"
+                      className="hidden"
+                      onBlur={onBlur}
+                      onChange={(event) => {
+                        handleLanguageChangeOnFileUpload(
+                          event.target.files?.[0]?.name ?? "",
+                        );
+                        onChange(event.target.files?.[0] ?? null);
+                      }}
+                    />
+                  )}
+                />
+                {uploadedCodeFile && (
+                  <p
+                    className={`${inter.className} text-xs text-slate-300 mt-2`}
+                  >
+                    Selected file: {uploadedCodeFile.name}
+                  </p>
+                )}
+                {(errors.code || errors.codefile) && (
+                  <p className="text-red-500 text-xs mt-2">
+                    {errors.code?.message ?? errors.codefile?.message}
+                  </p>
+                )}
                 {/* Code Editor */}
                 <CodeSnippet title="">
                   <Editor
@@ -197,7 +270,8 @@ const PostForm = () => {
                     height="300px"
                     theme="vs-dark"
                     onMount={handleEditorDidMount}
-                    defaultValue="// add Your Code Snippet Here"
+                    defaultValue=""
+                    onChange={handleCodeEditorValueChange}
                   />
                 </CodeSnippet>
               </div>
@@ -338,7 +412,6 @@ const PostForm = () => {
                       isMulti
                       isClearable
                       onChange={(selectedOption) => {
-                        console.log("selectedOpt", selectedOption);
                         const selectedTags = (
                           selectedOption as MultiValue<SelectOption>
                         ).map((option) => option.value);
@@ -349,7 +422,7 @@ const PostForm = () => {
                       unstyled
                       className={`mt-1 ${inter.className} text-sm`}
                       classNames={{
-                        control: (state) =>
+                        control: () =>
                           `bg-[#191f2c] text-white rounded-lg min-h-[35px] px-3`,
                         valueContainer: () => "gap-2 py-0",
                         multiValue: () => "bg-slate-300 px-2 py-1",

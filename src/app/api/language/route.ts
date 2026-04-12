@@ -1,67 +1,14 @@
+import { prisma } from "@/prisma";
 import status from "http-status";
+import type { Languages } from "@generated/prisma/client";
 import { NextResponse } from "next/server";
 
-const languages: string[] = [
-  "apex",
-  "azcli",
-  "bat",
-  "c",
-  "clojure",
-  "coffeescript",
-  "cpp",
-  "csharp",
-  "csp",
-  "css",
-  "dockerfile",
-  "fsharp",
-  "go",
-  "graphql",
-  "handlebars",
-  "html",
-  "ini",
-  "java",
-  "javascript",
-  "json",
-  "kotlin",
-  "less",
-  "lua",
-  "markdown",
-  "msdax",
-  "mysql",
-  "objective-c",
-  "pascal",
-  "perl",
-  "pgsql",
-  "php",
-  "plaintext",
-  "postiats",
-  "powerquery",
-  "powershell",
-  "pug",
-  "python",
-  "r",
-  "razor",
-  "redis",
-  "redshift",
-  "ruby",
-  "rust",
-  "sb",
-  "scheme",
-  "scss",
-  "shell",
-  "sol",
-  "sql",
-  "st",
-  "swift",
-  "tcl",
-  "typescript",
-  "vb",
-  "xml",
-  "yaml",
-];
-
 export async function GET() {
-  return NextResponse.json<string[]>(languages, {
+  const languages: Languages[] = await prisma.languages.findMany({
+    distinct: ["name"],
+  });
+
+  return NextResponse.json<Languages[]>(languages, {
     status: status.OK,
   });
 }

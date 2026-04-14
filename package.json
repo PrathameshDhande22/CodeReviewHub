@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -H localhost",
+    "podman": "podman machine start && podman compose -f start-dockercompose.yaml up -d",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -19,6 +20,7 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.1",
     "http-status": "^2.1.0",
+    "minio": "^8.0.7",
     "next": "16.1.7",
     "next-auth": "^4.24.13",
     "pg": "^8.20.0",

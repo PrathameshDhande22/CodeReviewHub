@@ -3,7 +3,7 @@ export type RegisterResponse = {
   error?: string;
 };
 
-export type APIResponse<T> = {
+export type APIResponse<T = null> = {
   message: string;
   data?: T;
   status: "success" | "error" | "invalid";

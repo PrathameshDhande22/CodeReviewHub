@@ -8,12 +8,14 @@ import { compare } from "bcryptjs";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
-  secret:
-    process.env.AUTH_SECRET ??
-    process.env.NEXTAUTH_SECRET ??
-    process.env.BETTER_AUTH_SECRET,
+  secret: process.env.BETTER_AUTH_SECRET,
   session: {
     strategy: "jwt",
+  },
+  pages: {
+    newUser: "/",
+    signIn: "/login",
+    error: "/login",
   },
   providers: [
     CredentialsProvider({
@@ -91,10 +93,7 @@ export const getOptionalServerSession = async () => {
   try {
     return await getServerSession(authOptions);
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.name === "JWEDecryptionFailed"
-    ) {
+    if (error instanceof Error && error.name === "JWEDecryptionFailed") {
       return null;
     }
 

@@ -76,7 +76,7 @@ model Post {
   published        Boolean    @default(false)
   language         String
   code             String?    @db.Text
-  blobUrl          String?
+  blobName         String?
   requireReview    Boolean    @default(true)
   acceptedReviewId String?
   requireComments  Boolean    @default(true)
@@ -145,8 +145,8 @@ model PostTag {
   tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
 
-model Languages{
-  id  Int    @id @default(autoincrement())
-  name String @unique
-  extension String 
+model Languages {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  extension String
 }

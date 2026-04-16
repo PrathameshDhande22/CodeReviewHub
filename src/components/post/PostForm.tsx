@@ -18,6 +18,8 @@ import Switch from "../UI/Switch";
 import { getTags } from "@/api/tag";
 import type { Languages, Tag } from "@generated/prisma/client";
 import { DevTool } from "@hookform/devtools";
+import { createPostApi } from "@/api/postcode";
+import { toast } from "react-toastify";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -152,7 +154,34 @@ const PostForm = () => {
 
   const onSubmit = (data: PostReviewInput) => {
     console.log("Form Data:", data);
-    // Here you can handle the form submission, e.g., send the data to your API
+
+    // Build the from data
+    const formdata = new FormData();
+    formdata.append("title", data.title);
+    formdata.append("description", data.description ?? "");
+    if (data.code) {
+      formdata.append("code", data.code);
+    }
+    if (data.codefile) {
+      formdata.append("codefile", data.codefile);
+    }
+    formdata.append("language", data.language);
+    formdata.append("inlineFeedback", String(data.inlineFeedback));
+    formdata.append("requireReview", String(data.requireReview));
+    formdata.append("draft", String(data.draft));
+    data.tags.forEach((tag) => {
+      formdata.append("tags", tag);
+    });
+
+    // call the create post api
+    createPostApi(formdata).then((response) => {
+      // TODO: redirect to the newly created post
+      if (response.status === "success") {
+        toast.success("Post created Successfully");
+      } else {
+        toast.error(response.message);
+      }
+    });
   };
 
   return (
@@ -474,7 +503,6 @@ const PostForm = () => {
               </div>
             </div>
           </div>
-          <DevTool control={control} />
         </form>
       </div>
     </div>

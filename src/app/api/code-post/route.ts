@@ -8,46 +8,57 @@ import status from "http-status";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const user = await getOptionalServerSession();
-
-  if (!user) {
-    return NextResponse.json<APIResponse<string>>(
-      {
-        message: "User not Found",
-        status: "invalid",
-      },
-      {
-        status: status.UNAUTHORIZED,
-      },
-    );
-  }
-
-  const postbody: FormData = await request.formData();
-  let postId: string;
   try {
-    postId = await createPostFromFormData(postbody, user.user.id);
-  } catch (error) {
-    if (error instanceof PostCodeServiceError) {
-      return NextResponse.json<APIResponse>(
+    const user = await getOptionalServerSession();
+
+    if (!user) {
+      return NextResponse.json<APIResponse<string>>(
         {
-          message: error.message,
+          message: "User not Found",
           status: "invalid",
         },
         {
-          status: error.statusCode,
+          status: status.UNAUTHORIZED,
         },
       );
     }
 
-    throw error;
-  }
+    const postbody: FormData = await request.formData();
+    let postId: string;
+    try {
+      postId = await createPostFromFormData(postbody, user.user.id);
+    } catch (error) {
+      if (error instanceof PostCodeServiceError) {
+        return NextResponse.json<APIResponse>(
+          {
+            message: error.message,
+            status: "invalid",
+          },
+          {
+            status: error.statusCode,
+          },
+        );
+      }
 
-  return NextResponse.json<APIResponse<string>>(
-    {
-      message: "Post created successfully",
-      status: "success",
-      data: postId,
-    },
-    { status: status.CREATED },
-  );
+      throw error;
+    }
+
+    return NextResponse.json<APIResponse<string>>(
+      {
+        message: "Post created successfully",
+        status: "success",
+        data: postId,
+      },
+      { status: status.CREATED },
+    );
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json<APIResponse>(
+      {
+        message: "Failed to Create the Post",
+        status: "error",
+      },
+      { status: status.INTERNAL_SERVER_ERROR },
+    );
+  }
 }

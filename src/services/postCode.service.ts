@@ -58,11 +58,11 @@ export async function createPostFromFormData(
 ): Promise<string> {
   const title = postbody.get("title") as string;
   const tags = postbody.getAll("tags") as string[];
+  const description = postbody.get("description") as string | null;
   const draft = postbody.get("draft") === "true";
   const inlineFeedback = postbody.get("inlineFeedback") === "true";
   const requireReview = postbody.get("requireReview") === "true";
   const progLanguage = postbody.get("language");
-  const description = postbody.get("description") as string | null;
 
   if (!title) {
     throw new PostCodeServiceError("Title is required", status.BAD_REQUEST);

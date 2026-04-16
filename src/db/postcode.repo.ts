@@ -1,6 +1,6 @@
 import { prisma } from "@/prisma";
 import { PostCodeRequest } from "@/types/postCode";
-import { Post } from "@generated/prisma/client";
+import { PostTagCreateManyInput } from "@generated/prisma/models";
 
 export async function createPostReview(post: PostCodeRequest): Promise<string> {
   try {
@@ -25,10 +25,15 @@ export async function createPostReview(post: PostCodeRequest): Promise<string> {
   }
 }
 
-export async function getCodeFromFile(
-  file: File,
-  charstoRead: number,
-): Promise<string> {
-  const preview = await file.text();
-  return preview.slice(0, charstoRead);
+export async function assignTagToPost(tagId: number[], postid: string) {
+  try {
+    await prisma.postTag.createMany({
+      data: tagId.map(
+        (value): PostTagCreateManyInput => ({ postId: postid, tagId: value }),
+      ),
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

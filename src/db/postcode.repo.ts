@@ -25,12 +25,67 @@ export async function createPostReview(post: PostCodeRequest): Promise<string> {
   }
 }
 
-export async function assignTagToPost(tagId: number[], postid: string) {
+export async function assignTagToPost(
+  tagId: number[],
+  postid: string,
+): Promise<void> {
   try {
     await prisma.postTag.createMany({
       data: tagId.map(
         (value): PostTagCreateManyInput => ({ postId: postid, tagId: value }),
       ),
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getPosts(
+  skip: number,
+  nexttoFetch: number,
+  userid?: string,
+) {
+  try {
+    return prisma.post.findMany({
+      where: {
+        authorId: userid,
+      },
+      skip: skip,
+      take: nexttoFetch,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        code: true,
+        language: true,
+        acceptedReviewId: true,
+        authorId: true,
+        blobName: true,
+        published: true,
+        requireComments: true,
+        requireReview: true,
+        status: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        postTags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
   } catch (error) {
     console.error(error);

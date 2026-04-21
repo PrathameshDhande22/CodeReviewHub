@@ -2,6 +2,7 @@ import Link from "next/link";
 import { JetBrains_Mono, Space_Grotesk, Inter } from "next/font/google";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import PostShort from "../post/PostShort";
+import RecentPost from "../post/RecentPost";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({ subsets: ["latin"] });
@@ -25,7 +26,12 @@ const ProfileTabs = ({ activeTab }: { activeTab: TabKey }) => {
         {tabs.map((tab) => (
           <Link
             key={tab.key}
-            href={`/profile?tab=${tab.key}`}
+            href={{
+              pathname: "/profile",
+              query: {
+                tab: tab.key,
+              },
+            }}
             className={`text-sm font-medium pb-2 border-b-2 transition-colors ${
               activeTab === tab.key
                 ? "text-primary border-primary"
@@ -40,10 +46,11 @@ const ProfileTabs = ({ activeTab }: { activeTab: TabKey }) => {
       {/* Posts List */}
       {activeTab === "posts" && (
         <div className="space-y-4">
-          {/* TODO: Show the Recent Post of the User */}
+          <RecentPost />
         </div>
       )}
 
+      {/* TODO: Show the History like which review he had added */}
       {activeTab === "history" && (
         <div className="rounded-xl border border-white/8 bg-[#0d1424]/90 p-8 backdrop-blur-sm text-center">
           <p className={`${inter.className} text-slate-500 text-sm`}>
@@ -52,6 +59,7 @@ const ProfileTabs = ({ activeTab }: { activeTab: TabKey }) => {
         </div>
       )}
 
+      {/* TODO: Show the recent comments he added */}
       {activeTab === "comments" && (
         <div className="rounded-xl border border-white/8 bg-[#0d1424]/90 p-8 backdrop-blur-sm text-center">
           <p className={`${inter.className} text-slate-500 text-sm`}>

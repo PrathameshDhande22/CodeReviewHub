@@ -1,9 +1,11 @@
 import { getOptionalServerSession } from "@/auth";
 import {
   createPostFromFormData,
+  getPost,
   PostCodeServiceError,
 } from "@/services/postCode.service";
 import { APIResponse } from "@/types";
+import { Post } from "@generated/prisma/client";
 import status from "http-status";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -52,13 +54,61 @@ export async function POST(request: NextRequest) {
       { status: status.CREATED },
     );
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json<APIResponse>(
       {
         message: "Failed to Create the Post",
         status: "error",
       },
       { status: status.INTERNAL_SERVER_ERROR },
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    // Get the User
+    const user = await getOptionalServerSession();
+
+    if (!user) {
+      return NextResponse.json<APIResponse<string>>(
+        {
+          message: "User not Found",
+          status: "invalid",
+        },
+        {
+          status: status.UNAUTHORIZED,
+        },
+      );
+    }
+
+    const params = await request.nextUrl.searchParams;
+
+    const skip = Number(params.get("skip") ?? 0) || 0;
+    const take = Number(params.get("take") ?? 10) || 10;
+
+    const posts = await getPost(skip, take, user.user.id);
+
+    return NextResponse.json<APIResponse<Post[]>>(
+      {
+        message: "Posts Fetch Successfully",
+        status: "success",
+        data: posts,
+      },
+      {
+        status: status.OK,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json<APIResponse>(
+      {
+        message: "Failed to Get the User Posts",
+        status: "error",
+      },
+      {
+        status: status.INTERNAL_SERVER_ERROR,
+      },
     );
   }
 }

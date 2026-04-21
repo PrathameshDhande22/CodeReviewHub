@@ -28,9 +28,7 @@ const PostShort = ({
 }: PostShortProps) => {
   return (
     <div>
-      <article
-        className="rounded-xl border border-white/8 bg-[#0d1424]/90 p-5 backdrop-blur-sm"
-      >
+      <article className="rounded-xl border border-white/8 bg-[#0d1424]/90 p-5 backdrop-blur-sm">
         {/* Tag & Time */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">

@@ -1,4 +1,8 @@
-import { assignTagToPost, createPostReview } from "@/db/postcode.repo";
+import {
+  assignTagToPost,
+  createPostReview,
+  getPosts,
+} from "@/db/postcode.repo";
 import { uploadFile } from "@/services/blobstorage";
 import { getLanguages } from "@/services/language.service";
 import { createTags } from "@/db/tag.repo";
@@ -149,4 +153,13 @@ export async function createPostFromFormData(
     },
     tags,
   );
+}
+
+export async function getPost(skip: number, take: number, userid?: string) {
+  try {
+    return getPosts(skip, take, userid);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

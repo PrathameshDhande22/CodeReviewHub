@@ -49,6 +49,7 @@ const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
         {/* Right Content Area */}
         <div className="space-y-8">
           <ProfileTabs activeTab={activeTab} />
+          {/* TODO: Remove these Recent Reviews and Recent Activity as they will be shown in the tab */}
           <RecentReviews />
           <RecentActivity />
         </div>

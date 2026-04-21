@@ -1,6 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { AuthOptions, getServerSession } from "next-auth";
-import type { User as PrismaUser } from "@generated/prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
@@ -59,10 +58,9 @@ export const authOptions: AuthOptions = {
           throw new Error("Email and password are required");
         }
 
-        type AuthUser = PrismaUser & { password?: string; username?: string };
-        const user = (await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
-        })) as AuthUser | null;
+        });
 
         if (!user || !user.password) {
           return null;

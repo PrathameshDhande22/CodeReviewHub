@@ -153,10 +153,18 @@ model Languages {
 }
 
 model UserReputation {
-  id        String   @id @default(cuid())
-  userid    String
-  user      User     @relation(fields: [userid], references: [id], onDelete: Cascade)
+  id String @id @default(cuid())
+
+  userid String
+  user   User   @relation(fields: [userid], references: [id], onDelete: Cascade)
+
   levelno   Int
   score     Int
   updatedAt DateTime @updatedAt
+}
+
+model Reputation {
+  id        Int    @id
+  score     Int
+  levelname String @unique
 }

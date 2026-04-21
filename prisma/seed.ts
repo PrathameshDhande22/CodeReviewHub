@@ -68,6 +68,24 @@ const languages = [
   { name: "yaml", extension: ".yaml" },
 ];
 
+
+export const reputationLevels = [
+  { score: 0, levelname: "Newbie Reviewer" },
+  { score: 100, levelname: "Code Explorer" },
+  { score: 300, levelname: "Bug Hunter" },
+  { score: 700, levelname: "Helpful Reviewer" },
+  { score: 1200, levelname: "Insightful Analyst" },
+  { score: 2000, levelname: "Code Critic" },
+  { score: 3000, levelname: "Quality Guardian" },
+  { score: 4500, levelname: "Refactoring Expert" },
+  { score: 6000, levelname: "Architecture Advisor" },
+  { score: 8000, levelname: "Senior Reviewer" },
+  { score: 10000, levelname: "Principal Reviewer" },
+  { score: 12000, levelname: "Code Master" },
+  { score: 13500, levelname: "Elite Reviewer" },
+  { score: 15000, levelname: "Legendary Architect" }
+];
+
 async function main() {
   await Promise.all(
     languages.map((language) =>
@@ -75,8 +93,8 @@ async function main() {
         where: { name: language.name },
         update: { extension: language.extension },
         create: language,
-      }),
-    ),
+      })
+    )
   );
 }
 

@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  username      String?   @unique
-  email         String    @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  posts         Post[]
-  comments      Comment[]
-  reviews       Review[]
+  id              String           @id @default(cuid())
+  name            String?
+  username        String?          @unique
+  email           String           @unique
+  password        String?
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  posts           Post[]
+  comments        Comment[]
+  reviews         Review[]
+  userReputations UserReputation[]
 }
 
 model Account {
@@ -149,4 +150,13 @@ model Languages {
   id        Int    @id @default(autoincrement())
   name      String @unique
   extension String
+}
+
+model UserReputation {
+  id        String   @id @default(cuid())
+  userid    String
+  user      User     @relation(fields: [userid], references: [id], onDelete: Cascade)
+  levelno   Int
+  score     Int
+  updatedAt DateTime @updatedAt
 }

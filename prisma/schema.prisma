@@ -164,7 +164,7 @@ model UserReputation {
 }
 
 model Reputation {
-  id        Int    @id
+  id        Int    @id @default(autoincrement())
   score     Int
   levelname String @unique
 }

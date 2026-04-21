@@ -68,7 +68,6 @@ const languages = [
   { name: "yaml", extension: ".yaml" },
 ];
 
-
 export const reputationLevels = [
   { score: 0, levelname: "Newbie Reviewer" },
   { score: 100, levelname: "Code Explorer" },
@@ -83,7 +82,7 @@ export const reputationLevels = [
   { score: 10000, levelname: "Principal Reviewer" },
   { score: 12000, levelname: "Code Master" },
   { score: 13500, levelname: "Elite Reviewer" },
-  { score: 15000, levelname: "Legendary Architect" }
+  { score: 15000, levelname: "Legendary Architect" },
 ];
 
 async function main() {
@@ -93,8 +92,18 @@ async function main() {
         where: { name: language.name },
         update: { extension: language.extension },
         create: language,
-      })
-    )
+      }),
+    ),
+  );
+
+  await Promise.all(
+    reputationLevels.map((value) =>
+      prisma.reputation.upsert({
+        create: { levelname: value.levelname, score: value.score },
+        update: { levelname: value.levelname },
+        where: { levelname: value.levelname },
+      }),
+    ),
   );
 }
 

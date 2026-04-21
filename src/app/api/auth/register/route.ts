@@ -5,6 +5,7 @@ import status from "http-status";
 import { RegisterResponse } from "@/types";
 import { hash } from "bcryptjs";
 
+// TODO: When user register add the reputation for him as the newbie
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
       },
     );
   } catch (err: unknown) {
-    console.log(err)
+    console.log(err);
     if (err instanceof Error) {
       return NextResponse.json<RegisterResponse>(
         { error: "Internal Server Error", success: false },

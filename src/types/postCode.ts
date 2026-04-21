@@ -4,7 +4,7 @@ export interface PostCodeRequest {
   code: string | null;
   language: string | null;
   authorId: string;
-  blobName: string | undefined;
+  blobName?: string | null;
   published: boolean;
   requireComments: boolean;
   requireReview: boolean;

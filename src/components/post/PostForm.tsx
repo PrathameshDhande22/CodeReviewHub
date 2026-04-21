@@ -20,6 +20,7 @@ import type { Languages, Tag } from "@generated/prisma/client";
 import { DevTool } from "@hookform/devtools";
 import { createPostApi } from "@/api/postcode";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -63,6 +64,8 @@ const PostForm = () => {
   });
 
   //#endregion
+
+  const router = useRouter();
 
   //#region State
   const [languages, setLanguages] = useState<Languages[]>([]);
@@ -153,8 +156,6 @@ const PostForm = () => {
     });
 
   const onSubmit = (data: PostReviewInput) => {
-    console.log("Form Data:", data);
-
     // Build the from data
     const formdata = new FormData();
     formdata.append("title", data.title);
@@ -178,6 +179,7 @@ const PostForm = () => {
       // TODO: redirect to the newly created post
       if (response.status === "success") {
         toast.success("Post created Successfully");
+        router.replace("/");
       } else {
         toast.error(response.message);
       }

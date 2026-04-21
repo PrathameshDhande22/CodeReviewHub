@@ -140,7 +140,7 @@ export async function createPostFromFormData(
       title: title,
       description: String(description),
       authorId: userId,
-      blobName: String(objectname),
+      blobName: objectname ?? null,
       code: code,
       language: validLanguage.name,
       published: !draft,

@@ -1201,17 +1201,29 @@
     postcss "^8.5.6"
     tailwindcss "4.2.2"
 
-"@tanstack/query-core@5.97.0":
-  version "5.97.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.97.0.tgz#538c66b9290cd57771c2e198c9d8f89d89299943"
-  integrity sha512-QdpLP5VzVMgo4VtaPppRA2W04UFjIqX+bxke/ZJhE5cfd5UPkRzqIAJQt9uXkQJjqE8LBOMbKv7f8HCsZltXlg==
+"@tanstack/query-core@5.99.2":
+  version "5.99.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.99.2.tgz#5895a4a269ae9e438aacf873657ea28d466c6fc4"
+  integrity sha512-1HunU0bXVsR1ZJMZbcOPE6VtaBJxsW809RE9xPe4Gz7MlB0GWwQvuTPhMoEmQ/hIzFKJ/DWAuttIe7BOaWx0tA==
 
-"@tanstack/react-query@^5.97.0":
-  version "5.97.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.97.0.tgz#0df5f6320a4b62ae8ed5042bb59166b6426624ad"
-  integrity sha512-y4So4eGcQoK2WVMAcDNZE9ofB/p5v1OlKvtc1F3uqHwrtifobT7q+ZnXk2mRkc8E84HKYSlAE9z6HXl2V0+ySQ==
+"@tanstack/query-devtools@5.99.2":
+  version "5.99.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.99.2.tgz#5fd7b1816f875f2f69b4001dba5a982a297c6665"
+  integrity sha512-TEF1d+RYO9l8oeCwgzmOHIgKwAzXQmw2s/ny2bW8qeg2OMkkLjALfVEivgCMR3OL/jVdMmeTPX56WrV+uvYJFg==
+
+"@tanstack/react-query-devtools@^5.99.2":
+  version "5.99.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-devtools/-/react-query-devtools-5.99.2.tgz#25a1308b506d6b87a640c4f3dec6cc7497b8aa22"
+  integrity sha512-8txkK9A9XBNTB8RoxVgfp6W3qwBr25tNP10L4yu3KuyhAdEvccECfIRzesSwMVk/wpVVioAr+hbMtUkMMF+WVw==
   dependencies:
-    "@tanstack/query-core" "5.97.0"
+    "@tanstack/query-devtools" "5.99.2"
+
+"@tanstack/react-query@^5.99.2":
+  version "5.99.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.99.2.tgz#083cd4639b291a4ff00605f515b6f6352a1d881c"
+  integrity sha512-vM91UEe45QUS9ED6OklsVL15i8qKcRqNwpWzPTVWvRPRSEgDudDgHpvyTjcdlwHcrKNa80T+xXYcchT2noPnZA==
+  dependencies:
+    "@tanstack/query-core" "5.99.2"
 
 "@tybys/wasm-util@^0.10.0", "@tybys/wasm-util@^0.10.1":
   version "0.10.1"

@@ -7,7 +7,7 @@ interface PostShortProps {
   title: string;
   description: string;
   language: string;
-  tag: string[];
+  tag: string;
   createdTime: Date;
   code: string;
 }

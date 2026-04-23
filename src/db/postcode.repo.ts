@@ -69,6 +69,8 @@ export async function getPosts(
         requireComments: true,
         requireReview: true,
         status: true,
+        createdAt: true,
+        updatedAt: true,
         author: {
           select: {
             id: true,

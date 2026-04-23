@@ -5,7 +5,7 @@ import {
   PostCodeServiceError,
 } from "@/services/postCode.service";
 import { APIResponse } from "@/types";
-import { Post } from "@generated/prisma/client";
+import { SelectedPost } from "@/types/postCode";
 import status from "http-status";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     const user = await getOptionalServerSession();
 
     if (!user) {
-      return NextResponse.json<APIResponse<string>>(
+      return NextResponse.json<APIResponse>(
         {
           message: "User not Found",
           status: "invalid",
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
 
     const posts = await getPost(skip, take, user.user.id);
 
-    return NextResponse.json<APIResponse<Post[]>>(
+    return NextResponse.json<APIResponse<SelectedPost[]>>(
       {
         message: "Posts Fetch Successfully",
         status: "success",

@@ -41,16 +41,17 @@ const RecentPost = () => {
       )}
 
       {posts.map((post) => {
-        const tags = post.postTags?.map((pt) => pt.tag.name).join(', ') ?? '';
         return (
           <div key={post.id}>
             <PostShort
+              id={post.id}
               title={post.title}
               description={post.description ?? ""}
               code={post.code ?? ""}
               language={post.language}
               createdTime={new Date(post.createdAt)}
-              tag={tags}
+              tag={post.postTags.map((t) => t.tag.name)}
+              status={post.status}
             />
           </div>
         );

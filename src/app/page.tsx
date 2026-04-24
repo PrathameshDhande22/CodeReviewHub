@@ -5,17 +5,12 @@ import { BiCommentEdit } from "react-icons/bi";
 import { BsQuestionSquareFill } from "react-icons/bs";
 import {
   FiArrowUpRight,
-  FiCheckSquare,
   FiCode,
-  FiMessageSquare,
   FiUsers,
 } from "react-icons/fi";
 import { GoCommentDiscussion } from "react-icons/go";
-import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 import {
   LuBadgeCheck,
-  LuBotMessageSquare,
-  LuGitPullRequest,
 } from "react-icons/lu";
 import { MdTerminal } from "react-icons/md";
 

@@ -40,8 +40,8 @@ const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-        {/* Left Sidebar */}
-        <aside className="space-y-4">
+        {/* Left Sidebar - Sticky on desktop */}
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <RankCard />
           <StatsGrid />
         </aside>

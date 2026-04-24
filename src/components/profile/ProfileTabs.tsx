@@ -22,7 +22,7 @@ const ProfileTabs = ({ activeTab }: { activeTab: TabKey }) => {
   return (
     <div>
       {/* Tab Headers */}
-      <div className={`${inter.className} flex items-center gap-6 mb-6`}>
+      <div className={`${inter.className} flex items-center gap-6 mb-6 sticky top-0 z-10 bg-[#0a101e] py-3 -mt-3`}>
         {tabs.map((tab) => (
           <Link
             key={tab.key}

@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma";
-import { PostCodeRequest } from "@/types/postCode";
+import { PostCodeRequest, PropertyBag } from "@/types/postCode";
 import { PostTagCreateManyInput } from "@generated/prisma/models";
 
 export async function createPostReview(post: PostCodeRequest): Promise<string> {
@@ -89,6 +89,36 @@ export async function getPosts(
         },
       },
     });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function deletePostCode(postId: string) {
+  try {
+    return await prisma.post.delete({
+      where: {
+        id: postId
+      },
+      select: {
+        id: true
+      }
+    })
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// TODO: Implement the PropertyBag to conditionally include related data based on the flags
+export async function getPostById(postId: string,propertyBag?:PropertyBag) {
+  try {
+    return await prisma.post.findUnique({
+      where: {
+        id: postId
+      },
+    })
   } catch (error) {
     console.error(error);
     throw error;

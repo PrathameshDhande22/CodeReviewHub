@@ -1,6 +1,8 @@
 import {
   assignTagToPost,
   createPostReview,
+  deletePostCode,
+  getPostById,
   getPosts,
 } from "@/db/postcode.repo";
 import { uploadFile } from "@/services/blobstorage";
@@ -131,7 +133,7 @@ export async function createPostFromFormData(
     const uploadedCode = postbody.get("code") as string;
     code = uploadedCode;
 
-    if (uploadedCode.length >= 300) {
+    if (uploadedCode.length >= 500) {
       objectname = `${userId}/${Date.now()}-code${validLanguage?.extension}`;
       const file = new File([uploadedCode], `code${validLanguage?.extension}`);
       code = uploadedCode.slice(0, 200);
@@ -158,6 +160,19 @@ export async function createPostFromFormData(
 export async function getPost(skip: number, take: number, userid?: string) {
   try {
     return getPosts(skip, take, userid);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function deletePost(postId: string) {
+  try {
+    const posttoDelete = await getPostById(postId)
+    if (!posttoDelete) {
+      throw new PostCodeServiceError("Post not found", status.NOT_FOUND);
+    }
+    return await deletePostCode(postId);
   } catch (error) {
     console.error(error);
     throw error;

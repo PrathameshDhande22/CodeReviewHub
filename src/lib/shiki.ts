@@ -6,7 +6,6 @@ import {
   type BundledLanguage,
 } from "shiki";
 
-// Module-level singleton cache for the Shiki highlighter (server-side only)
 let highlighterInstance: Highlighter | null = null;
 const loadedLangs = new Set<string>();
 

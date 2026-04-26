@@ -2,8 +2,8 @@
 
 import { getRecentPosts } from "@/api/postcode";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import PostShort from "./PostShort";
-import { Spinner } from "../UI/spinner";
+import PostShort from "@/components/post/PostShort";
+import { Spinner } from "@/components/UI/spinner";
 
 const RecentPost = () => {
   const PAGE_SIZE = 10;

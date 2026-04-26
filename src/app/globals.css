@@ -53,8 +53,8 @@
 
 .bg-hero {
   background:
-    radial-gradient(circle at 25% 25%, rgba(59,130,246,0.18), transparent 40%),
-    radial-gradient(circle at 75% 50%, rgba(14,165,233,0.12), transparent 45%),
+    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.18), transparent 40%),
+    radial-gradient(circle at 75% 50%, rgba(14, 165, 233, 0.12), transparent 45%),
     #020617;
 }
 
@@ -98,7 +98,8 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);}
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -131,12 +132,19 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);}
+  --sidebar-ring: oklch(0.556 0 0);
+}
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;}
+    @apply border-border outline-ring/50;
+  }
+
   body {
-    @apply bg-background text-foreground;}
+    @apply bg-background text-foreground;
+  }
+
   html {
-    @apply font-sans;}}
+    @apply font-sans;
+  }
+}

@@ -17,6 +17,16 @@ export async function getRecentPosts(
 ): Promise<APIResponse<SelectedPost[]>> {
   const response = await fetch(`/api/code-post?take=${take}&skip=${skip}`, {
     method: "GET",
+    next: {
+      revalidate: 60
+    }
+  });
+  return response.json();
+}
+
+export async function deletePostapi(postid: string): Promise<APIResponse<string | null>> {
+  const response = await fetch(`/api/code-post/${postid}`, {
+    method: "DELETE",
   });
   return response.json();
 }

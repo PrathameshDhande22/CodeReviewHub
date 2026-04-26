@@ -46,3 +46,11 @@ export type SelectedPost = Prisma.PostGetPayload<{
     };
   };
 }>;
+
+
+export type PropertyBag = {
+  IncludeAuther: boolean;
+  IncludeTags: boolean;
+  IncludeComments: boolean;
+  IncludeReviews: boolean;
+}

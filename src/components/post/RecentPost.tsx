@@ -3,6 +3,7 @@
 import { getRecentPosts } from "@/api/postcode";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostShort from "./PostShort";
+import { Spinner } from "../UI/spinner";
 
 const RecentPost = () => {
   const PAGE_SIZE = 10;
@@ -31,7 +32,9 @@ const RecentPost = () => {
   return (
     <div className="space-y-4">
       {isLoading && (
-        <div className="text-sm text-slate-400">Loading posts...</div>
+        <div className="text-2xl text-slate-400 flex justify-center">
+          <Spinner className="size-5" />
+        </div>
       )}
 
       {isError && (

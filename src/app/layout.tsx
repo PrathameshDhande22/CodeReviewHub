@@ -4,6 +4,10 @@ import { Metadata, Viewport } from "next";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import Providers from "@/providers/provider";
+import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 //#region SEO Metadata
 export const viewport: Viewport = {
@@ -38,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={cn("dark", "font-sans", inter.variable)}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>

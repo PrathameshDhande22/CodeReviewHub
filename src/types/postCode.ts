@@ -49,8 +49,64 @@ export type SelectedPost = Prisma.PostGetPayload<{
 
 
 export type PropertyBag = {
-  IncludeAuther: boolean;
-  IncludeTags: boolean;
-  IncludeComments: boolean;
-  IncludeReviews: boolean;
+  IncludeAuther?: boolean;
+  IncludeTags?: boolean;
+  IncludeComments?: boolean;
+  IncludeReviews?: boolean;
 }
+
+export type PostWithRelations = Prisma.PostGetPayload<{
+  include: {
+    author: {
+      select: {
+        id: true;
+        name: true;
+        image: true;
+      };
+    };
+    postTags: {
+      select: {
+        tag: {
+          select: {
+            id: true;
+            name: true;
+          };
+        };
+      };
+    };
+    comments: {
+      select: {
+        id: true;
+        content: true;
+        lineno: true;
+        authorId: true;
+        author: {
+          select: {
+            id: true;
+            name: true;
+            image: true;
+          };
+        };
+        parentId: true;
+        createdAt: true;
+      };
+    };
+    reviews: {
+      select: {
+        id: true;
+        content: true;
+        rating: true;
+        isAccepted: true;
+        reviewerId: true;
+        reviewer: {
+          select: {
+            id: true;
+            name: true;
+            image: true;
+          };
+        };
+        createdAt: true;
+      };
+    };
+  };
+}>;

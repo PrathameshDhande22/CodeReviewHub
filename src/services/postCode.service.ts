@@ -5,10 +5,10 @@ import {
   getPostById,
   getPosts,
 } from "@/db/postcode.repo";
-import { uploadFile } from "@/services/blobstorage";
+import { deleteFile, getFileContent, uploadFile } from "@/services/blobstorage";
 import { getLanguages } from "@/services/language.service";
 import { createTags } from "@/db/tag.repo";
-import { PostCodeRequest } from "@/types/postCode";
+import { PostCodeRequest, PropertyBag } from "@/types/postCode";
 import { Languages } from "@generated/prisma/client";
 import status from "http-status";
 
@@ -172,7 +172,31 @@ export async function deletePost(postId: string) {
     if (!posttoDelete) {
       throw new PostCodeServiceError("Post not found", status.NOT_FOUND);
     }
-    return await deletePostCode(postId);
+    const deleted = await deletePostCode(postId);
+    if (deleted.id && deleted.blobName) {
+      await deleteFile(deleted.blobName)
+    }
+    return deleted;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getPostByIdService(postId: string, includebag: PropertyBag) {
+  try {
+    // Fetch the Post
+    const post = await getPostById(postId, includebag);
+    if (!post) {
+      throw new PostCodeServiceError("Post not found", status.NOT_FOUND);
+    }
+
+    // Get the Code from Blob Storage if blobName exists
+    if (post.blobName) {
+      const code = await getFileContent(post.blobName);
+      post.code = code;
+    }
+    return post;
   } catch (error) {
     console.error(error);
     throw error;

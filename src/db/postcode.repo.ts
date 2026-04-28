@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma";
-import { PostCodeRequest, PropertyBag } from "@/types/postCode";
+import { PostCodeRequest, PostWithRelations, PropertyBag } from "@/types/postCode";
+import { Prisma } from "@generated/prisma/client";
 import { PostTagCreateManyInput } from "@generated/prisma/models";
 
 export async function createPostReview(post: PostCodeRequest): Promise<string> {
@@ -102,7 +103,8 @@ export async function deletePostCode(postId: string) {
         id: postId
       },
       select: {
-        id: true
+        id: true,
+        blobName: true
       }
     })
   } catch (error) {
@@ -111,14 +113,60 @@ export async function deletePostCode(postId: string) {
   }
 }
 
-// TODO: Implement the PropertyBag to conditionally include related data based on the flags
-export async function getPostById(postId: string,propertyBag?:PropertyBag) {
+export async function getPostById(postId: string, propertyBag?: PropertyBag): Promise<PostWithRelations | null> {
   try {
+    const include: Prisma.PostInclude = {};
+
+    if (propertyBag?.IncludeAuther) {
+      include.author = {
+        select: { id: true, name: true, image: true },
+      };
+    }
+
+    if (propertyBag?.IncludeTags) {
+      include.postTags = {
+        select: {
+          tag: { select: { id: true, name: true } },
+        },
+      };
+    }
+
+    if (propertyBag?.IncludeComments) {
+      include.comments = {
+        select: {
+          id: true,
+          content: true,
+          lineno: true,
+          authorId: true,
+          author: { select: { id: true, name: true, image: true } },
+          parentId: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      };
+    }
+
+    if (propertyBag?.IncludeReviews) {
+      include.reviews = {
+        select: {
+          id: true,
+          content: true,
+          rating: true,
+          isAccepted: true,
+          reviewerId: true,
+          reviewer: { select: { id: true, name: true, image: true } },
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      };
+    }
+
+    const hasIncludes = Object.keys(include).length > 0;
+
     return await prisma.post.findUnique({
-      where: {
-        id: postId
-      },
-    })
+      where: { id: postId },
+      ...(hasIncludes && { include }),
+    }) as PostWithRelations | null;
   } catch (error) {
     console.error(error);
     throw error;

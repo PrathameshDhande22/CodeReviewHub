@@ -1,23 +1,18 @@
 "use client";
 
-import { getLanguages } from "@/api/language";
-import { createPostApi } from "@/api/postcode";
-import { getTags } from "@/api/tag";
 import { PostReviewInput, PostSchema } from "@/schemas/post";
-import type { Languages, Tag } from "@generated/prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Monaco, OnMount } from "@monaco-editor/react";
-import dynamic from "next/dynamic";
 import { Inter, Space_Grotesk } from "next/font/google";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { MdUploadFile } from "react-icons/md";
-import type { MultiValue } from "react-select";
-import Select from "react-select";
-import Creatable from "react-select/creatable";
-import { toast } from "react-toastify";
 import FormField from "../auth/FormField";
+import { useEffect, useRef, useState } from "react";
+import { Languages, Post, Tag } from "@generated/prisma/client";
+import { getLanguages } from "@/api/language";
+import { getTags } from "@/api/tag";
+import { Editor, Monaco, OnMount } from "@monaco-editor/react";
+import { MdUploadFile } from "react-icons/md";
+import Select, { MultiValue } from "react-select";
+import Creatable from "react-select/creatable";
 import CodeSnippet from "../CodeSnippet";
 import Switch from "../UI/Switch";
 
@@ -31,16 +26,16 @@ const inter = Inter({
 });
 //#endregion
 
-//#region Dynamic Import
-const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
-//#endregion
-
 type SelectOption = {
   value: string;
   label: string;
 };
 
-const PostForm = () => {
+interface PostEditFormProps {
+  post: Post;
+}
+
+const PostEditForm = ({ post }: PostEditFormProps) => {
   //#region React Hook form
   const {
     control,
@@ -52,19 +47,19 @@ const PostForm = () => {
     mode: "onTouched",
     resolver: zodResolver(PostSchema),
     defaultValues: {
-      code: "",
+      title: post.title,
+      description: post.description ?? undefined,
+      code: post.code,
       codefile: null,
-      language: "",
-      requireReview: true,
-      inlineFeedback: true,
-      draft: false,
+      language: post.language,
+      requireReview: post.requireReview,
+      inlineFeedback: post.requireComments,
+      draft: post.published === false,
       tags: [],
     },
   });
 
   //#endregion
-
-  const router = useRouter();
 
   //#region State
   const [languages, setLanguages] = useState<Languages[]>([]);
@@ -155,42 +150,10 @@ const PostForm = () => {
 
       return selectedTagOption ?? { value: tag, label: tag };
     });
-
-  const onSubmit = (data: PostReviewInput) => {
-    // Build the from data
-    const formdata = new FormData();
-    formdata.append("title", data.title);
-    formdata.append("description", data.description ?? "");
-    if (data.code) {
-      formdata.append("code", data.code);
-    }
-    if (data.codefile) {
-      formdata.append("codefile", data.codefile);
-    }
-    formdata.append("language", data.language);
-    formdata.append("inlineFeedback", String(data.inlineFeedback));
-    formdata.append("requireReview", String(data.requireReview));
-    formdata.append("draft", String(data.draft));
-    data.tags.forEach((tag) => {
-      formdata.append("tags", tag);
-    });
-
-    // call the create post api
-    createPostApi(formdata).then((response) => {
-      // TODO: redirect to the newly created post
-      if (response.status === "success") {
-        toast.success("Post created Successfully");
-        router.replace("/");
-      } else {
-        toast.error(response.message);
-      }
-    });
-  };
-
   return (
     <div className="mt-8">
       <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <div className="flex flex-col lg:flex-row gap-10 w-full">
             {/* Left Side */}
             <div className="space-y-4 w-full">
@@ -279,7 +242,6 @@ const PostForm = () => {
                           event.target.files?.[0]?.name ?? "",
                         );
                         onChange(event.target.files?.[0] ?? null);
-                        // Clear the Monaco editor when a file is uploaded
                         if (event.target.files?.[0] && editorRef.current) {
                           editorRef.current.setValue("");
                         }
@@ -305,8 +267,9 @@ const PostForm = () => {
                     className="mt-3"
                     height="300px"
                     theme="vs-dark"
+                    defaultLanguage={post.language.toLowerCase()}
                     onMount={handleEditorDidMount}
-                    defaultValue=""
+                    defaultValue={post.code ?? ""}
                     onChange={handleCodeEditorValueChange}
                   />
                 </CodeSnippet>
@@ -361,10 +324,9 @@ const PostForm = () => {
                       className={`mt-1 ${inter.className} text-sm`}
                       classNames={{
                         control: (state) =>
-                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${
-                            state.isFocused
-                              ? "ring-2 ring-primary outline-none"
-                              : ""
+                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${state.isFocused
+                            ? "ring-2 ring-primary outline-none"
+                            : ""
                           }`,
                         valueContainer: () => "gap-2 py-0",
                         singleValue: () => "text-white",
@@ -379,8 +341,7 @@ const PostForm = () => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${
-                            state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}
@@ -476,8 +437,7 @@ const PostForm = () => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${
-                            state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}
@@ -516,4 +476,4 @@ const PostForm = () => {
   );
 };
 
-export default PostForm;
+export default PostEditForm;

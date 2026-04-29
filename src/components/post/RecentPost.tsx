@@ -43,6 +43,12 @@ const RecentPost = () => {
         </div>
       )}
 
+      {posts.length === 0 && !isLoading && (
+        <div className="text-sm text-slate-500 text-center">
+          No recent posts to display.
+        </div>
+      )}
+
       {posts.map((post) => {
         return (
           <div key={post.id}>

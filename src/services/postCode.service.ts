@@ -166,12 +166,17 @@ export async function getPost(skip: number, take: number, userid?: string) {
   }
 }
 
-export async function deletePost(postId: string) {
+export async function deletePost(postId: string, userid: string) {
   try {
     const posttoDelete = await getPostById(postId)
     if (!posttoDelete) {
       throw new PostCodeServiceError("Post not found", status.NOT_FOUND);
     }
+
+    if (posttoDelete.authorId !== userid) {
+      throw new PostCodeServiceError("Unauthorized to delete this post", status.UNAUTHORIZED);
+    }
+
     const deleted = await deletePostCode(postId);
     if (deleted.id && deleted.blobName) {
       await deleteFile(deleted.blobName)

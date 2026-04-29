@@ -18,6 +18,7 @@ const space_grotesk = Space_Grotesk({
 });
 //#endregion
 
+// TODO: Add the Metadata for the edit Post Page
 export async function generateMetadata(): Promise<Metadata> {
   const session = await getOptionalServerSession();
   return {
@@ -41,6 +42,7 @@ export default async function EditPostPage(
   try {
     post = await getPostByIdService(id, {
       IncludeTags: true,
+      IncludeAuther: true,
     });
   } catch (error) {
     if (error instanceof PostCodeServiceError) {
@@ -52,6 +54,12 @@ export default async function EditPostPage(
     }
   }
 
+  // Check the Author of the Post
+  if (post?.authorId !== session.user.id) {
+    redirect(`/post/${id}`);
+  }
+
+  // Post Not Found
   if (!post) {
     notFound();
   }

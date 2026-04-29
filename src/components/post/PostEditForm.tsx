@@ -15,6 +15,8 @@ import Select, { MultiValue } from "react-select";
 import Creatable from "react-select/creatable";
 import CodeSnippet from "../CodeSnippet";
 import Switch from "../UI/Switch";
+import { PostWithRelations } from "@/types/postCode";
+import { IoIosCloseCircle } from "react-icons/io";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -32,7 +34,7 @@ type SelectOption = {
 };
 
 interface PostEditFormProps {
-  post: Post;
+  post: PostWithRelations;
 }
 
 const PostEditForm = ({ post }: PostEditFormProps) => {
@@ -55,7 +57,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
       requireReview: post.requireReview,
       inlineFeedback: post.requireComments,
       draft: post.published === false,
-      tags: [],
+      tags: post.postTags.map((value) => String(value.tag.id)),
     },
   });
 
@@ -64,6 +66,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
   //#region State
   const [languages, setLanguages] = useState<Languages[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [prevCodeState, setPrevCodeState] = useState<string>(post.code ?? "");
   //#endregion
 
   const uploadedCodeFile = useWatch({ control, name: "codefile" });
@@ -127,6 +130,18 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
     });
   };
   //#endregion
+
+  // handle when the uploaded file is removed
+  const handleOnFileRemoved = () => {
+    setValue("codefile", null);
+    setValue("code", prevCodeState, {
+      shouldTouch: true,
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    editorRef.current?.setValue(prevCodeState);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const languageOptions = languages.map((language) => ({
     value: language.name,
@@ -243,6 +258,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                         );
                         onChange(event.target.files?.[0] ?? null);
                         if (event.target.files?.[0] && editorRef.current) {
+                          setPrevCodeState(editorRef.current.getValue());
                           editorRef.current.setValue("");
                         }
                       }}
@@ -250,11 +266,17 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                   )}
                 />
                 {uploadedCodeFile && (
-                  <p
-                    className={`${inter.className} text-xs text-slate-300 mt-2`}
-                  >
-                    Selected file: {uploadedCodeFile.name}
-                  </p>
+                  <div className="flex flex-row gap-2 items-center">
+                    <p className={`${inter.className} text-xs text-slate-300`}>
+                      Selected file: {uploadedCodeFile.name}
+                    </p>
+                    <button
+                      className="hover:text-red-500 cursor-pointer"
+                      onClick={handleOnFileRemoved}
+                    >
+                      <IoIosCloseCircle size={20} className="text-red-400" />
+                    </button>
+                  </div>
                 )}
                 {(errors.code || errors.codefile) && (
                   <p className="text-red-500 text-xs mt-2">
@@ -280,7 +302,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                   type="submit"
                   className={`py-3 px-8 bg-linear-to-r from-primary to-primary-dark ${inter.className} cursor-pointer text-black text-sm rounded-md font-semibold uppercase`}
                 >
-                  Deploy to Hub
+                  Save Changes
                 </button>
               </div>
             </div>
@@ -324,9 +346,10 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                       className={`mt-1 ${inter.className} text-sm`}
                       classNames={{
                         control: (state) =>
-                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${state.isFocused
-                            ? "ring-2 ring-primary outline-none"
-                            : ""
+                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${
+                            state.isFocused
+                              ? "ring-2 ring-primary outline-none"
+                              : ""
                           }`,
                         valueContainer: () => "gap-2 py-0",
                         singleValue: () => "text-white",
@@ -341,7 +364,8 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${
+                            state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}
@@ -437,7 +461,8 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${
+                            state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}

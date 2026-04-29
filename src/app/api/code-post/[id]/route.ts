@@ -1,3 +1,4 @@
+import { getOptionalServerSession } from "@/auth";
 import { deletePost, PostCodeServiceError } from "@/services/postCode.service";
 import { APIResponse } from "@/types";
 import status from "http-status";
@@ -6,7 +7,21 @@ import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(request: NextRequest, ctx: RouteContext<'/api/code-post/[id]'>) {
     try {
         const { id } = await ctx.params;
-        const postid = await deletePost(id);
+
+        const user = await getOptionalServerSession();
+        if (!user) {
+            return NextResponse.json<APIResponse<string>>(
+                {
+                    message: "User not Found",
+                    status: "invalid",
+                },
+                {
+                    status: status.UNAUTHORIZED,
+                },
+            );
+        }
+
+        const postid = await deletePost(id, user.user.id);
         return NextResponse.json<APIResponse<string>>(
             {
                 message: "Post deleted successfully",

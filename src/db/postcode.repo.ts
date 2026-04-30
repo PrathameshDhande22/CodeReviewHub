@@ -26,6 +26,30 @@ export async function createPostReview(post: PostCodeRequest): Promise<string> {
   }
 }
 
+export async function updatePostReview(post: PostCodeRequest, postId: string) {
+  try {
+    return await prisma.post.update({
+      where: { id: postId },
+      data: {
+        title: post.title,
+        blobName: post.blobName,
+        code: post.code,
+        description: post.description,
+        language: post.language,
+        published: post.published,
+        requireComments: post.requireComments,
+        requireReview: post.requireReview
+      },
+      select: {
+        id: true
+      }
+    })
+  } catch (error) {
+    console.error("Error updating post review:", error);
+    throw error;
+  }
+}
+
 export async function assignTagToPost(
   tagId: number[],
   postid: string,
@@ -36,6 +60,22 @@ export async function assignTagToPost(
         (value): PostTagCreateManyInput => ({ postId: postid, tagId: value }),
       ),
     });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function deAssignTagFromPost(tagId: number[], postid: string): Promise<void> {
+  try {
+    await prisma.postTag.deleteMany({
+      where: {
+        postId: postid,
+        tagId: {
+          in: tagId
+        }
+      }
+    })
   } catch (error) {
     console.error(error);
     throw error;

@@ -4,7 +4,7 @@ export interface PostCodeRequest {
   title: string;
   description: string;
   code: string | null;
-  language: string | null;
+  language: string;
   authorId: string;
   blobName?: string | null;
   published: boolean;

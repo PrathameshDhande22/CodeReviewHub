@@ -30,3 +30,11 @@ export async function deletePostapi(postid: string): Promise<APIResponse<string 
   });
   return response.json();
 }
+
+export async function updatePostApi(postid: string, formdata: FormData):Promise<APIResponse<string>> {
+  const response = await fetch(`/api/code-post/${postid}`, {
+    method: "PUT",
+    body: formdata
+  })
+  return response.json();
+}

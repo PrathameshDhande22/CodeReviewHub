@@ -1,14 +1,16 @@
 import {
   assignTagToPost,
   createPostReview,
+  deAssignTagFromPost,
   deletePostCode,
   getPostById,
   getPosts,
+  updatePostReview,
 } from "@/db/postcode.repo";
+import { createTags } from "@/db/tag.repo";
 import { deleteFile, getFileContent, uploadFile } from "@/services/blobstorage";
 import { getLanguages } from "@/services/language.service";
-import { createTags } from "@/db/tag.repo";
-import { PostCodeRequest, PropertyBag } from "@/types/postCode";
+import { PostCodeRequest, PostWithRelations, PropertyBag } from "@/types/postCode";
 import { Languages } from "@generated/prisma/client";
 import status from "http-status";
 
@@ -22,23 +24,28 @@ export class PostCodeServiceError extends Error {
   }
 }
 
+function getTagsFromBody(tags: string[]): { tagInNumber: number[], newtag: string[] } {
+  // Check for the existing tags. 
+  const tagInNumber: number[] = [];
+  const newtag: string[] = [];
+
+  tags.forEach((element) => {
+    const tagid = Number(element);
+    if (isNaN(tagid)) {
+      newtag.push(element);
+    } else {
+      tagInNumber.push(tagid);
+    }
+  });
+  return { tagInNumber, newtag };
+}
+
+
 export async function createPost(postcode: PostCodeRequest, tags: string[]) {
   try {
     const postid = await createPostReview(postcode);
 
-    // Assign the tags to the post
-    const tagInNumber: number[] = [];
-    const newtag: string[] = [];
-
-    tags.forEach((element) => {
-      const tagid = Number(element);
-      if (isNaN(tagid)) {
-        newtag.push(element);
-      } else {
-        tagInNumber.push(tagid);
-      }
-    });
-
+    const { tagInNumber, newtag } = getTagsFromBody(tags);
     const newlyAddedTagsid = await createTags(newtag);
 
     await assignTagToPost([...tagInNumber, ...newlyAddedTagsid], postid);
@@ -58,10 +65,7 @@ export async function getCodeFromFile(
   return preview.slice(0, charstoRead);
 }
 
-export async function createPostFromFormData(
-  postbody: FormData,
-  userId: string,
-): Promise<string> {
+async function validatePostFromFormData(postbody: FormData, userId: string): Promise<PostCodeRequest & { tags: string[] }> {
   const title = postbody.get("title") as string;
   const tags = postbody.getAll("tags") as string[];
   const description = postbody.get("description") as string | null;
@@ -140,20 +144,29 @@ export async function createPostFromFormData(
       await uploadFile(userId, objectname, file);
     }
   }
+  return {
+    title: title,
+    description: String(description),
+    authorId: userId,
+    blobName: objectname ?? null,
+    code: code,
+    language: validLanguage.name,
+    published: !draft,
+    requireComments: inlineFeedback,
+    requireReview: requireReview,
+    tags: tags,
+  }
+}
+
+export async function createPostFromFormData(
+  postbody: FormData,
+  userId: string,
+): Promise<string> {
+  const postrequest = await validatePostFromFormData(postbody, userId)
 
   return createPost(
-    {
-      title: title,
-      description: String(description),
-      authorId: userId,
-      blobName: objectname ?? null,
-      code: code,
-      language: validLanguage.name,
-      published: !draft,
-      requireComments: inlineFeedback,
-      requireReview: requireReview,
-    },
-    tags,
+    postrequest,
+    postrequest.tags,
   );
 }
 
@@ -202,6 +215,63 @@ export async function getPostByIdService(postId: string, includebag: PropertyBag
       post.code = code;
     }
     return post;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function updatePostFormData(
+  postId: string,
+  userId: string,
+  postbody: FormData) {
+  const posttoUpdate = await getPostById(postId, {
+    IncludeAuther: true,
+    IncludeTags: true
+  })
+
+  if (!posttoUpdate) {
+    throw new PostCodeServiceError("Post not found", status.NOT_FOUND);
+  }
+
+  if (posttoUpdate.authorId !== userId) {
+    throw new PostCodeServiceError("Unauthorized to update this post", status.UNAUTHORIZED);
+  }
+
+  const requestbody = await validatePostFromFormData(postbody, userId);
+  return updatePost(postId, requestbody, requestbody.tags, posttoUpdate)
+}
+
+export async function updatePost(postId: string, postcode: PostCodeRequest, tags: string[], existingPost: PostWithRelations) {
+  try {
+    // Delete the Old Blob if Blobname exists
+    if (existingPost.blobName) {
+      await deleteFile(existingPost.blobName)
+    }
+
+    const { tagInNumber, newtag } = getTagsFromBody(tags)
+
+    // Remove the tags which should not be assigned to the post anymore
+    const existingTagIds = existingPost.postTags.map((value) => value.tag.id)
+    const tagsToRemove = existingTagIds.filter((value) => !tagInNumber.includes(value))
+    const tagsToAdd = tagInNumber.filter((value) => !existingTagIds.includes(value))
+
+    // Add the new Tags
+    if (newtag.length > 0) {
+      const newlyAddedTagsid = await createTags(newtag);
+      tagsToAdd.push(...newlyAddedTagsid)
+    }
+
+    // Deassign the tags which are not needed anymore
+    if (tagsToRemove.length > 0) {
+      await deAssignTagFromPost(tagsToRemove, postId)
+    }
+
+    // Assign the New Tags to the Post
+    if (tagsToAdd.length > 0)
+      await assignTagToPost(tagsToAdd, postId)
+
+    return await updatePostReview(postcode, postId);
   } catch (error) {
     console.error(error);
     throw error;

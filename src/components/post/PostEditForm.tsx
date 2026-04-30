@@ -1,22 +1,25 @@
 "use client";
 
-import { PostReviewInput, PostSchema } from "@/schemas/post";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Inter, Space_Grotesk } from "next/font/google";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import FormField from "../auth/FormField";
-import { useEffect, useRef, useState } from "react";
-import { Languages, Post, Tag } from "@generated/prisma/client";
 import { getLanguages } from "@/api/language";
+import { updatePostApi } from "@/api/postcode";
 import { getTags } from "@/api/tag";
+import { PostReviewInput, PostSchema } from "@/schemas/post";
+import { PostWithRelations } from "@/types/postCode";
+import { Languages, Tag } from "@generated/prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor, Monaco, OnMount } from "@monaco-editor/react";
+import { Inter, Space_Grotesk } from "next/font/google";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { IoIosCloseCircle } from "react-icons/io";
 import { MdUploadFile } from "react-icons/md";
 import Select, { MultiValue } from "react-select";
 import Creatable from "react-select/creatable";
+import { toast } from "react-toastify";
+import FormField from "../auth/FormField";
 import CodeSnippet from "../CodeSnippet";
 import Switch from "../UI/Switch";
-import { PostWithRelations } from "@/types/postCode";
-import { IoIosCloseCircle } from "react-icons/io";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -69,6 +72,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
   const [prevCodeState, setPrevCodeState] = useState<string>(post.code ?? "");
   //#endregion
 
+  const router = useRouter();
   const uploadedCodeFile = useWatch({ control, name: "codefile" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -165,10 +169,42 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
 
       return selectedTagOption ?? { value: tag, label: tag };
     });
+
+  const onSubmit = (data: PostReviewInput) => {
+    // Build the from data
+    const formdata = new FormData();
+    formdata.append("title", data.title);
+    formdata.append("description", data.description ?? "");
+    if (data.code) {
+      formdata.append("code", data.code);
+    }
+    if (data.codefile) {
+      formdata.append("codefile", data.codefile);
+    }
+    formdata.append("language", data.language);
+    formdata.append("inlineFeedback", String(data.inlineFeedback));
+    formdata.append("requireReview", String(data.requireReview));
+    formdata.append("draft", String(data.draft));
+    data.tags.forEach((tag) => {
+      formdata.append("tags", tag);
+    });
+
+    // call the create post api
+    updatePostApi(post.id, formdata).then((response) => {
+      // TODO: redirect to the updated post view page.
+      if (response.status === "success") {
+        toast.success(response.message);
+        router.replace("/");
+      } else {
+        toast.error(response.message);
+      }
+    });
+  };
+
   return (
     <div className="mt-8">
       <div>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col lg:flex-row gap-10 w-full">
             {/* Left Side */}
             <div className="space-y-4 w-full">

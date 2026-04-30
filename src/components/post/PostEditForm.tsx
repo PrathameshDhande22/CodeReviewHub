@@ -144,6 +144,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
       shouldValidate: true,
     });
     editorRef.current?.setValue(prevCodeState);
+    editorRef.current?.updateOptions({ readOnly: false });
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -295,6 +296,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                         onChange(event.target.files?.[0] ?? null);
                         if (event.target.files?.[0] && editorRef.current) {
                           setPrevCodeState(editorRef.current.getValue());
+                          editorRef.current?.updateOptions({ readOnly: true });
                           editorRef.current.setValue("");
                         }
                       }}

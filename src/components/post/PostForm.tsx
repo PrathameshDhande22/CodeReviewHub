@@ -68,7 +68,7 @@ const PostForm = () => {
   //#region State
   const [languages, setLanguages] = useState<Languages[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [prevCodeState] = useState<string>("");
+  const [prevCodeState, setPrevCodeState] = useState<string>("");
   //#endregion
 
   //#region Hooks
@@ -145,6 +145,7 @@ const PostForm = () => {
       shouldValidate: true,
     });
     editorRef.current?.setValue(prevCodeState);
+    editorRef.current?.updateOptions({ readOnly: false });
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -294,9 +295,10 @@ const PostForm = () => {
                           event.target.files?.[0]?.name ?? "",
                         );
                         onChange(event.target.files?.[0] ?? null);
-                        // Clear the Monaco editor when a file is uploaded
                         if (event.target.files?.[0] && editorRef.current) {
+                          setPrevCodeState(editorRef.current.getValue());
                           editorRef.current.setValue("");
+                          editorRef.current.updateOptions({ readOnly: true });
                         }
                       }}
                     />

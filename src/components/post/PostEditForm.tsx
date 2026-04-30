@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import FormField from "../auth/FormField";
 import CodeSnippet from "../CodeSnippet";
 import Switch from "../UI/Switch";
+import { useQuery } from "@tanstack/react-query";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -67,7 +68,6 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
   //#endregion
 
   //#region State
-  const [languages, setLanguages] = useState<Languages[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [prevCodeState, setPrevCodeState] = useState<string>(post.code ?? "");
   //#endregion
@@ -78,7 +78,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
 
   const handleLanguageChangeOnFileUpload = (filename: string) => {
     const extension = "." + filename.split(".")[1];
-    const language = languages.find((lang) => lang.extension === extension);
+    const language = data?.find((lang) => lang.extension === extension);
 
     if (language) {
       setValue("language", language.name, {
@@ -90,15 +90,15 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
     }
   };
 
+  //#region Query
+  const { data } = useQuery({
+    queryKey: ["languages"],
+    queryFn: getLanguages,
+  });
+  //#endregion
+
   //#region Use Effects
   useEffect(() => {
-    // fetch the languages
-    getLanguages()
-      .then(setLanguages)
-      .catch((err) => {
-        console.error("Failed to fetch languages:", err);
-      });
-
     // fetch the tags
     getTags()
       .then(setTags)
@@ -148,13 +148,14 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const languageOptions = languages.map((language) => ({
-    value: language.name,
-    label: language.name.toUpperCase(),
-  }));
+  const languageOptions =
+    data?.map((language) => ({
+      value: language.name,
+      label: language.name.toUpperCase(),
+    })) ?? [];
 
-  const allowedExtensions = languages
-    .map((language) => language.extension)
+  const allowedExtensions = data
+    ?.map((language) => language.extension)
     .join(",");
 
   const tagOptions: SelectOption[] = tags.map((tag) => ({
@@ -296,7 +297,12 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
                         onChange(event.target.files?.[0] ?? null);
                         if (event.target.files?.[0] && editorRef.current) {
                           setPrevCodeState(editorRef.current.getValue());
-                          editorRef.current?.updateOptions({ readOnly: true });
+                          editorRef.current?.updateOptions({
+                            readOnly: true,
+                            readOnlyMessage: {
+                              value: "File uploaded. Editing is disabled.",
+                            },
+                          });
                           editorRef.current.setValue("");
                         }
                       }}

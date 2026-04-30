@@ -298,7 +298,12 @@ const PostForm = () => {
                         if (event.target.files?.[0] && editorRef.current) {
                           setPrevCodeState(editorRef.current.getValue());
                           editorRef.current.setValue("");
-                          editorRef.current.updateOptions({ readOnly: true });
+                          editorRef.current.updateOptions({
+                            readOnly: true,
+                            readOnlyMessage: {
+                              value: "File uploaded. Editing is disabled.",
+                            },
+                          });
                         }
                       }}
                     />

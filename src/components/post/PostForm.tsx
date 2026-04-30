@@ -12,6 +12,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { IoIosCloseCircle } from "react-icons/io";
 import { MdUploadFile } from "react-icons/md";
 import type { MultiValue } from "react-select";
 import Select from "react-select";
@@ -64,15 +65,17 @@ const PostForm = () => {
 
   //#endregion
 
-  const router = useRouter();
-
   //#region State
   const [languages, setLanguages] = useState<Languages[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [prevCodeState] = useState<string>("");
   //#endregion
 
+  //#region Hooks
+  const router = useRouter();
   const uploadedCodeFile = useWatch({ control, name: "codefile" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  //#endregion
 
   const handleLanguageChangeOnFileUpload = (filename: string) => {
     const extension = "." + filename.split(".")[1];
@@ -133,6 +136,18 @@ const PostForm = () => {
   };
   //#endregion
 
+  // handle when the uploaded file is removed
+  const handleOnFileRemoved = () => {
+    setValue("codefile", null);
+    setValue("code", prevCodeState, {
+      shouldTouch: true,
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    editorRef.current?.setValue(prevCodeState);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const languageOptions = languages.map((language) => ({
     value: language.name,
     label: language.name.toUpperCase(),
@@ -179,7 +194,7 @@ const PostForm = () => {
     createPostApi(formdata).then((response) => {
       // TODO: redirect to the newly created post
       if (response.status === "success") {
-        toast.success("Post created Successfully");
+        toast.success(response.message);
         router.replace("/");
       } else {
         toast.error(response.message);
@@ -288,11 +303,17 @@ const PostForm = () => {
                   )}
                 />
                 {uploadedCodeFile && (
-                  <p
-                    className={`${inter.className} text-xs text-slate-300 mt-2`}
-                  >
-                    Selected file: {uploadedCodeFile.name}
-                  </p>
+                  <div className="flex flex-row gap-2 items-center">
+                    <p className={`${inter.className} text-xs text-slate-300`}>
+                      Selected file: {uploadedCodeFile.name}
+                    </p>
+                    <button
+                      className="hover:text-red-500 cursor-pointer"
+                      onClick={handleOnFileRemoved}
+                    >
+                      <IoIosCloseCircle size={20} className="text-red-400" />
+                    </button>
+                  </div>
                 )}
                 {(errors.code || errors.codefile) && (
                   <p className="text-red-500 text-xs mt-2">

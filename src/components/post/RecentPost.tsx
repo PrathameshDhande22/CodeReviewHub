@@ -61,6 +61,7 @@ const RecentPost = () => {
               createdTime={new Date(post.createdAt)}
               tag={post.postTags.map((t) => t.tag.name)}
               status={post.status}
+              published={post.published}
             />
           </div>
         );

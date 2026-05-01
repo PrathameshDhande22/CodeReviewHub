@@ -1,18 +1,19 @@
 "use client";
 
+import { highlightCode } from "@/lib/shiki";
+import { CodeStatus } from "@generated/prisma/enums";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import PostStatusBadge from "./PostStatusBadge";
-import { CodeStatus } from "@generated/prisma/enums";
-import { highlightCode } from "@/lib/shiki";
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 
-import PostDeleteConfirmModal from "./PostDeleteConfirmModal";
 import { deletePostapi } from "@/api/postcode";
-import { toast } from "react-toastify";
+import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import PostDeleteConfirmModal from "./PostDeleteConfirmModal";
 
 interface PostShortProps {
   title: string;
@@ -23,6 +24,7 @@ interface PostShortProps {
   code: string;
   id: string;
   status: CodeStatus;
+  published: boolean;
 }
 
 //#region Font Declaration
@@ -40,6 +42,7 @@ const PostShort = ({
   tag,
   status,
   id,
+  published,
 }: PostShortProps) => {
   const formatted = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -120,7 +123,6 @@ const PostShort = ({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            {/* TODO: Handle the Edit for the Post */}
             <button
               className="p-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
               onClick={handleEdit}
@@ -131,7 +133,7 @@ const PostShort = ({
               postId={id}
               onDelete={() => handleDelete(id)}
             />
-            <PostStatusBadge status={status} />
+            <PostStatusBadge status={status} isDraft={!published} />
           </div>
         </div>
         {/* time */}
@@ -144,7 +146,10 @@ const PostShort = ({
 
         {/* Description */}
         <p
-          className={`${inter.className} mt-3 text-sm text-slate-300 leading-relaxed`}
+          className={cn(
+            `${inter.className} mt-3 text-sm text-slate-300 leading-relaxed`,
+            !published && "text-slate-400",
+          )}
         >
           {description}
         </p>
@@ -153,10 +158,10 @@ const PostShort = ({
         {code && (
           <div className="mt-4 rounded-lg overflow-hidden border-s-4 border-[#2f4a63]">
             {codeHtml ? (
-              <div
-                className="shiki-code-block text-sm [&>pre]:p-4 [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:max-h-64"
-                dangerouslySetInnerHTML={{ __html: codeHtml }}
-              />
+                <div
+                  className="text-sm [&>pre]:p-4 [&>pre]:m-0 [&>pre]:overflow-x-auto"
+                  dangerouslySetInnerHTML={{ __html: codeHtml }}
+                />
             ) : (
               <pre
                 className={`${jetbrains_mono.className} p-4 text-sm text-slate-300 bg-[#0d1117] overflow-x-auto max-h-64`}

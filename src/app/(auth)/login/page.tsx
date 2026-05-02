@@ -15,6 +15,7 @@ const inter = Inter({
 });
 //#endregion
 
+// TODO: Add the Metadata for the Login Page similar to the register page
 export const metadata: Metadata = {
   title: "Login",
 };
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default async function Login() {
   const session = await getOptionalServerSession();
   if (session?.user) {
+    // TODO: Found the user redirect to the user dashboar
     redirect("/");
   }
 

@@ -16,6 +16,7 @@ const inter = Inter({
 });
 //#endregion
 
+// TODO: Add the Metadata for the Register Page
 export const metadata: Metadata = {
   title: "Register",
 };
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 export default async function Register() {
   const session = await getOptionalServerSession();
   if (session?.user) {
+    // TODO: Found the user redirect to the user dashboard
     redirect("/");
   }
 

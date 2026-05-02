@@ -23,10 +23,6 @@ const PostForm = dynamic(() => import("@/components/post/PostForm"));
 //#endregion
 
 export default async function CreatePost() {
-  const session = await getOptionalServerSession();
-  if (session == null || session.user == null) {
-    redirect("/login");
-  }
 
   return (
     <div className="md:py-14 py-5 md:px-14 px-5 bg-[#0a1429] h-full w-full">

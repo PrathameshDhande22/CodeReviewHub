@@ -22,11 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
-  const user = getOptionalServerSession();
-  if (!user) {
-    redirect("/");
-  }
-
   // Validate the Tabs
   const { tab } = await searchParams;
   const activeTab: Tab = validTabs.includes(tab as Tab)

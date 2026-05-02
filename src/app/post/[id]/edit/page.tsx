@@ -30,9 +30,6 @@ export default async function EditPostPage(
   params: PageProps<"/post/[id]/edit">,
 ) {
   const session = await getOptionalServerSession();
-  if (session == null || session.user == null) {
-    redirect("/login");
-  }
 
   // Fetch the Post Data
   const { id } = await params.params;
@@ -55,7 +52,7 @@ export default async function EditPostPage(
   }
 
   // Check the Author of the Post
-  if (post?.authorId !== session.user.id) {
+  if (post?.authorId !== session?.user.id) {
     redirect(`/post/${id}`);
   }
 

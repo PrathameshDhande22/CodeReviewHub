@@ -158,13 +158,16 @@ model UserReputation {
   userid String
   user   User   @relation(fields: [userid], references: [id], onDelete: Cascade)
 
-  levelno   Int
+  reputationid Int
+  reputation   Reputation @relation(fields: [reputationid], references: [id], onDelete: Cascade)
+
   score     Int
   updatedAt DateTime @updatedAt
 }
 
 model Reputation {
-  id        Int    @id @default(autoincrement())
-  score     Int
-  levelname String @unique
+  id              Int              @id @default(autoincrement())
+  score           Int
+  levelname       String           @unique
+  userReputations UserReputation[]
 }

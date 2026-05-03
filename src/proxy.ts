@@ -11,7 +11,6 @@ export default async function proxy(request: NextRequest) {
 export const config: ProxyConfig = {
     matcher: [
         '/profile/:path*',
-        '/post',
-        '/post/:id/edit',
+        '/post/:path*',
     ]
 }

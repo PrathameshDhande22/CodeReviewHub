@@ -97,7 +97,7 @@ const LineCommentPopover = ({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Write your review comment..."
+            placeholder="Write your comment..."
             rows={3}
             className={`${jetbrains_mono.className} w-full bg-[#0a1220] border border-slate-700/40 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all`}
           />

@@ -14,6 +14,7 @@ import status from "http-status";
 import { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
+import { getOptionalServerSession } from "@/auth";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({
@@ -32,12 +33,19 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PostPage({ params }: PageProps<"/post/[id]">) {
   const { id } = await params;
   let post: PostWithRelations | null = null;
+  let owner: boolean = false;
   try {
     // Fetch the Post
     post = await getPostByIdService(id, {
       IncludeAuther: true,
       IncludeTags: true,
     });
+
+    // Check if the LoggedIn user is owner or not.
+    const user = await getOptionalServerSession();
+    if (user?.user.id === post.author.id) {
+      owner = true;
+    }
 
     // Post in Draft Mode then Not Found
     if (!post.published) notFound();
@@ -114,7 +122,7 @@ export default async function PostPage({ params }: PageProps<"/post/[id]">) {
           <CodeDisplay
             code={post.code}
             language={post.language}
-            postId={post.id}
+            owner={owner}
           />
         )}
       </article>

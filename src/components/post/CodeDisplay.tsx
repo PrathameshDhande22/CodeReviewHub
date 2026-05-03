@@ -14,7 +14,7 @@ const jetbrains_mono = JetBrains_Mono({ subsets: ["latin"], weight: "400" });
 interface CodeDisplayProps {
   code: string;
   language: string;
-  postId: string;
+  owner: boolean;
   onCommentSubmit?: (
     startLine: number,
     endLine: number,
@@ -25,7 +25,7 @@ interface CodeDisplayProps {
 const CodeDisplay = ({
   code,
   language,
-  postId,
+  owner,
   onCommentSubmit,
 }: CodeDisplayProps) => {
   const [lines, setLines] = useState<Token[][] | null>(null);
@@ -54,11 +54,13 @@ const CodeDisplay = ({
   }, [code, language]);
 
   const onLineMouseDown = useCallback((line: number) => {
-    dragging.current = true;
-    dragFrom.current = line;
-    setSelectedStart(line);
-    setSelectedEnd(line);
-    setShowPopover(false);
+    if (!owner) {
+      dragging.current = true;
+      dragFrom.current = line;
+      setSelectedStart(line);
+      setSelectedEnd(line);
+      setShowPopover(false);
+    }
   }, []);
 
   const onLineMouseEnter = useCallback((line: number) => {
@@ -79,11 +81,15 @@ const CodeDisplay = ({
       if (dragging.current) e.preventDefault();
     };
 
-    document.addEventListener("mouseup", onMouseUp);
-    document.addEventListener("selectstart", prevent);
+    if (!owner) {
+      document.addEventListener("mouseup", onMouseUp);
+      document.addEventListener("selectstart", prevent);
+    }
     return () => {
-      document.removeEventListener("selectstart", prevent);
-      document.removeEventListener("mouseup", onMouseUp);
+      if (!owner) {
+        document.removeEventListener("selectstart", prevent);
+        document.removeEventListener("mouseup", onMouseUp);
+      }
     };
   }, []);
 
@@ -116,7 +122,7 @@ const CodeDisplay = ({
 
   return (
     <CodeSnippet title={language}>
-      <div className="overflow-x-auto -mx-4 -mb-4">
+      <div className="overflow-x-auto -mx-4 -mb-4 custom-scrollbar">
         {lines
           ? lines.map((tokens, i) => {
               const lineNum = i + 1;
@@ -125,6 +131,7 @@ const CodeDisplay = ({
                   <CodeLine
                     lineNumber={lineNum}
                     tokens={tokens}
+                    owner={owner}
                     isSelected={isSelected(lineNum)}
                     onLineMouseDown={onLineMouseDown}
                     onLineMouseEnter={onLineMouseEnter}
@@ -132,7 +139,8 @@ const CodeDisplay = ({
                   />
 
                   {/* Show popover right below the last selected line */}
-                  {showPopover &&
+                  {!owner &&
+                    showPopover &&
                     selectedEnd === lineNum &&
                     selectedStart !== null && (
                       <LineCommentPopover

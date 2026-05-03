@@ -4,17 +4,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-neutral: #0A0E1C;
+  --color-neutral: #0a0e1c;
   --color-tertiary: #94a3b8;
   --color-primary: #8ed5ff;
-  --color-primary-dark: #38BDF8
+  --color-primary-dark: #38bdf8;
 }
 
 :root {
   --toastify-color-light: #fff;
   --toastify-color-dark: #121212;
   --toastify-color-info: #8ed5ff;
-  --toastify-color-success: #38BDF8;
+  --toastify-color-success: #38bdf8;
   --toastify-color-warning: #f1c40f;
   --toastify-color-error: hsl(6, 79%, 66%);
   --background: oklch(1 0 0);
@@ -53,8 +53,16 @@
 
 .bg-hero {
   background:
-    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.18), transparent 40%),
-    radial-gradient(circle at 75% 50%, rgba(14, 165, 233, 0.12), transparent 45%),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(59, 130, 246, 0.18),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 75% 50%,
+      rgba(14, 165, 233, 0.12),
+      transparent 45%
+    ),
     #020617;
 }
 
@@ -147,4 +155,28 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }

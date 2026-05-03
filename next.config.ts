@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   poweredByHeader: false,
   reactCompiler: true,
+  typedRoutes: true,
   // cacheComponents: true,
   compiler: {
     // removeConsole:true,

@@ -13,14 +13,14 @@ interface PostStatusBadgeProps {
 }
 
 const PostStatusBadge = ({ status, isDraft }: PostStatusBadgeProps) => {
-  if(isDraft){
-    return(
+  if (isDraft) {
+    return (
       <div
-          className={`${inter.className} px-3 bg-[#3b3b33] text-[0.6em] border-yellow-500/40 text-yellow-500 border rounded-2xl font-semibold py-0.5`}
-        >
-          DRAFT
-        </div>
-    )
+        className={`${inter.className} px-3 bg-[#3b3b33] text-[0.6em] border-yellow-500/40 text-yellow-500 border rounded-2xl font-semibold py-0.5`}
+      >
+        DRAFT
+      </div>
+    );
   }
   switch (status) {
     case "OPEN":

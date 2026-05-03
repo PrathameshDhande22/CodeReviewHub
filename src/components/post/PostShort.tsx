@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import PostDeleteConfirmModal from "./PostDeleteConfirmModal";
+import TagDisplay from "./TagDisplay";
 
 interface PostShortProps {
   title: string;
@@ -158,10 +159,10 @@ const PostShort = ({
         {code && (
           <div className="mt-4 rounded-lg overflow-hidden border-s-4 border-[#2f4a63]">
             {codeHtml ? (
-                <div
-                  className="text-sm [&>pre]:p-4 [&>pre]:m-0 [&>pre]:overflow-x-auto"
-                  dangerouslySetInnerHTML={{ __html: codeHtml }}
-                />
+              <div
+                className="text-sm [&>pre]:p-4 [&>pre]:m-0 [&>pre]:overflow-x-auto"
+                dangerouslySetInnerHTML={{ __html: codeHtml }}
+              />
             ) : (
               <pre
                 className={`${jetbrains_mono.className} p-4 text-sm text-slate-300 bg-[#0d1117] overflow-x-auto max-h-64`}
@@ -173,19 +174,7 @@ const PostShort = ({
         )}
 
         {/* tags */}
-        <div className="flex flex-row flex-wrap gap-2 mt-3 text-xs">
-          {/* TODO: Make the tag as clickable link and navigate to browse page according to that tag */}
-          {tag.map((value, index) => {
-            return (
-              <span
-                key={index}
-                className={`${inter.className} bg-[#363e51] text-slate-300 px-3 py-1`}
-              >
-                #{value}
-              </span>
-            );
-          })}
-        </div>
+        <TagDisplay tag={tag} />
       </article>
     </div>
   );

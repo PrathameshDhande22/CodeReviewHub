@@ -1,11 +1,11 @@
-import { JetBrains_Mono, Space_Grotesk, Inter } from "next/font/google";
-import { FiEdit2 } from "react-icons/fi";
-import { HiOutlineMail } from "react-icons/hi";
-import { BsCalendar3 } from "react-icons/bs";
 import { getOptionalServerSession } from "@/auth";
 import { getUserDetails } from "@/services/userprofile.service";
 import { User } from "@generated/prisma/client";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { redirect } from "next/navigation";
+import { BsCalendar3 } from "react-icons/bs";
+import { FiEdit2 } from "react-icons/fi";
+import { HiOutlineMail } from "react-icons/hi";
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({ subsets: ["latin"] });

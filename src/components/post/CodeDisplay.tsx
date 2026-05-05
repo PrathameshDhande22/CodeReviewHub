@@ -6,6 +6,8 @@ import { highlightCodeByLine, type Token } from "@/lib/shiki";
 import CodeSnippet from "@/components/CodeSnippet";
 import CodeLine from "./CodeLine";
 import LineCommentPopover from "./LineCommentPopover";
+import { addCommentOnPostApi } from "@/api/comment";
+import { toast } from "react-toastify";
 
 //#region Font Declaration
 const jetbrains_mono = JetBrains_Mono({ subsets: ["latin"], weight: "400" });
@@ -15,15 +17,10 @@ interface CodeDisplayProps {
   code: string;
   language: string;
   owner: boolean;
-  postid:string;
+  postid: string;
 }
 
-const CodeDisplay = ({
-  code,
-  language,
-  owner,
-  postid
-}: CodeDisplayProps) => {
+const CodeDisplay = ({ code, language, owner, postid }: CodeDisplayProps) => {
   const [lines, setLines] = useState<Token[][] | null>(null);
 
   const [selectedStart, setSelectedStart] = useState<number | null>(null);
@@ -101,12 +98,23 @@ const CodeDisplay = ({
     setSelectedEnd(null);
   }, []);
 
-  // Submit the comment 
+  // Submit the comment
   const submitComment = useCallback(
     (startLine: number, endLine: number, content: string) => {
+      // api call for adding the comment on the post
+      addCommentOnPostApi(postid, {
+        startline: startLine,
+        content: content,
+        endline: endLine,
+      }).then((response) => {
+        if (response.status === "error") {
+          toast.error(response.message);
+        }
+      });
+      
       closePopover();
     },
-    [ closePopover],
+    [closePopover],
   );
 
   const isSelected = (line: number) => {

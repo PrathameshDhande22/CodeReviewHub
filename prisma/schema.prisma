@@ -111,9 +111,10 @@ model Review {
 }
 
 model Comment {
-  id      String @id @default(cuid())
-  content String
-  lineno  Int?
+  id          String @id @default(cuid())
+  content     String
+  startlineno Int
+  endlineno   Int?
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)

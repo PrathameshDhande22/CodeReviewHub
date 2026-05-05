@@ -15,18 +15,14 @@ interface CodeDisplayProps {
   code: string;
   language: string;
   owner: boolean;
-  onCommentSubmit?: (
-    startLine: number,
-    endLine: number,
-    content: string,
-  ) => void;
+  postid:string;
 }
 
 const CodeDisplay = ({
   code,
   language,
   owner,
-  onCommentSubmit,
+  postid
 }: CodeDisplayProps) => {
   const [lines, setLines] = useState<Token[][] | null>(null);
 
@@ -105,12 +101,12 @@ const CodeDisplay = ({
     setSelectedEnd(null);
   }, []);
 
+  // Submit the comment 
   const submitComment = useCallback(
     (startLine: number, endLine: number, content: string) => {
-      onCommentSubmit?.(startLine, endLine, content);
       closePopover();
     },
-    [onCommentSubmit, closePopover],
+    [ closePopover],
   );
 
   const isSelected = (line: number) => {

@@ -26,6 +26,7 @@ const inter = Inter({
 });
 //#endregion
 
+// TODO: Add the seo metadata for the post.
 export async function generateMetadata(): Promise<Metadata> {
   return {};
 }
@@ -123,6 +124,7 @@ export default async function PostPage({ params }: PageProps<"/post/[id]">) {
             code={post.code}
             language={post.language}
             owner={owner}
+            postid={post.id}
           />
         )}
       </article>

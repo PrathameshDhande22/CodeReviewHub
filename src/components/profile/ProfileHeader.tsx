@@ -2,6 +2,7 @@ import { getOptionalServerSession } from "@/auth";
 import { getUserDetails } from "@/services/userprofile.service";
 import { User } from "@generated/prisma/client";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BsCalendar3 } from "react-icons/bs";
 import { FiEdit2 } from "react-icons/fi";
@@ -63,12 +64,14 @@ const ProfileHeader = async () => {
         </div>
 
         {/* Action Buttons */}
-        {/* TODO: Edit Profile Page Needs to be Implemented */}
         <div className="flex items-center gap-3 self-start sm:self-center">
-          <button className="flex items-center gap-2 bg-[#1a2a3e] hover:bg-[#223448] border border-slate-600/50 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+          <Link
+            href="/profile/update"
+            className="flex items-center gap-2 bg-[#1a2a3e] hover:bg-[#223448] border border-slate-600/50 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          >
             <FiEdit2 className="text-sm" />
             Edit Profile
-          </button>
+          </Link>
         </div>
       </div>
 

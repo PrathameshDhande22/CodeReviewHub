@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { getUser } from "@/db/user.repo";
 import NextAuth, { AuthOptions, getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -86,9 +87,16 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+      }
+      if (trigger === "update") {
+        const freshUser = await getUser(String(token.id));
+        if (freshUser) {
+          token.name = freshUser.name;
+          token.picture = freshUser.image;
+        }
       }
       return token;
     },

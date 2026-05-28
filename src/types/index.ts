@@ -8,3 +8,5 @@ export type APIResponse<T = null> = {
   data?: T;
   status: "success" | "error" | "invalid";
 };
+
+export type BucketName = "codefiles" | "profile-images";

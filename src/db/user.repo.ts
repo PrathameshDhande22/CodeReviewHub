@@ -18,3 +18,13 @@ export async function updateUserPassword(id: string, passwordHash: string) {
     data: { password: passwordHash },
   });
 }
+
+export async function updateUserProfile(
+  id: string,
+  data: { name?: string; image?: string },
+) {
+  return await prisma.user.update({
+    where: { id },
+    data,
+  });
+}

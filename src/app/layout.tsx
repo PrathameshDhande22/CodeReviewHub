@@ -36,10 +36,13 @@ export const metadata: Metadata = {
 };
 //#endregion
 
+// TODO: User the Layout Props here instead of these. 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en" className={cn("dark", "font-sans", inter.variable)}>
@@ -63,6 +66,7 @@ export default function RootLayout({
             theme="colored"
           />
           <main className="flex-1">{children}</main>
+          {modal}
           <Footer />
         </Providers>
       </body>

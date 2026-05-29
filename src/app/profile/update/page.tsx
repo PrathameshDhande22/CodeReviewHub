@@ -6,11 +6,13 @@ import { getUserDetails } from "@/services/userprofile.service";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Update Profile",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Update Profile",
+  };
+}
 
-const ProfileUpdatePage = async () => {
+export default async function ProfileUpdatePage() {
   const session = await getOptionalServerSession();
   if (!session) redirect("/login");
 
@@ -26,6 +28,4 @@ const ProfileUpdatePage = async () => {
       />
     </div>
   );
-};
-
-export default ProfileUpdatePage;
+}

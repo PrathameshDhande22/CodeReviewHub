@@ -2,11 +2,14 @@
 
 import { updateProfileApi } from "@/api/profile";
 import FormField from "@/components/auth/FormField";
-import { updateProfileSchema, type UpdateProfileInputs } from "@/schemas/profile";
+import {
+  updateProfileSchema,
+  type UpdateProfileInputs,
+} from "@/schemas/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
@@ -97,7 +100,7 @@ const UpdateProfileModal = ({
             Edit Profile
           </p>
           <h2
-            className={`${space_grotesk.className} text-xl font-bold text-slate-200`}
+            className={`${space_grotesk.className} text-xl font-bold text-slate-300`}
           >
             Update your profile
           </h2>
@@ -163,7 +166,9 @@ const UpdateProfileModal = ({
         )}
 
         {errors.image && (
-          <p className="text-red-500 text-xs">{errors.image.message as string}</p>
+          <p className="text-red-500 text-xs">
+            {errors.image.message as string}
+          </p>
         )}
 
         <p
@@ -178,6 +183,7 @@ const UpdateProfileModal = ({
         <FormField
           label="FIRST NAME"
           htmlFor="firstName"
+          className="text-slate-300"
           inputProps={{ type: "text", placeholder: "Linus" }}
           register={register("firstName")}
           extra={
@@ -194,6 +200,7 @@ const UpdateProfileModal = ({
         <FormField
           label="LAST NAME"
           htmlFor="lastName"
+          className="text-slate-300"
           inputProps={{ type: "text", placeholder: "Torvalds" }}
           register={register("lastName")}
           extra={

@@ -36,14 +36,7 @@ export const metadata: Metadata = {
 };
 //#endregion
 
-// TODO: User the Layout Props here instead of these. 
-export default function RootLayout({
-  children,
-  modal,
-}: Readonly<{
-  children: React.ReactNode;
-  modal: React.ReactNode;
-}>) {
+export default function RootLayout({ children, modal }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("dark", "font-sans", inter.variable)}>
       <head>

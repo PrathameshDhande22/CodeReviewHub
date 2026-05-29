@@ -14,6 +14,12 @@ export type ReviewWithAuthorAndCommentCount = Prisma.ReviewGetPayload<{
                 comments: true;
             };
         };
+        post: {
+            select: {
+                title: true,
+                id: true,
+            }
+        }
     };
 }>;
 

@@ -43,11 +43,12 @@ export async function getReviewById(reviewId: string) {
     return review
 }
 
-export async function getReviews(postId: string, page: number, pageSize: number, sort: SortReview) {
+export async function getReviews(page: number, pageSize: number, sort: SortReview, userid?: string, postId?: string,) {
     // Get all the Reviews respecting the pagination
     const reviews = prisma.review.findMany({
         where: {
-            postId: postId
+            postId: postId,
+            reviewerId: userid
         },
         include: {
             reviewer: {
@@ -62,7 +63,15 @@ export async function getReviews(postId: string, page: number, pageSize: number,
                 select: {
                     comments: true
                 }
-            }
+            },
+            ...(userid && {
+                post: {
+                    select: {
+                        title: true,
+                        id: true,
+                    }
+                }
+            })
         },
         take: pageSize,
         skip: Math.max((page - 1) * pageSize, 0),
@@ -72,12 +81,14 @@ export async function getReviews(postId: string, page: number, pageSize: number,
         ]
     })
 
-    // Get the total count of the review related to that postid.
+    // Get the total count of the review related to that postid or userid
     const counts = prisma.review.count({
         where: {
-            postId: postId
+            postId: postId,
+            reviewerId: userid
         }
-    })
+    });
+
 
     const [reviews_paginated, totalcount] = await Promise.all([
         reviews, counts

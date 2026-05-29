@@ -38,5 +38,7 @@ export const config: ProxyConfig = {
         '/post/:path*',
         '/api/code-post',
         '/api/code-post/:path*',
+        '/api/review',
+        '/api/comment'
     ]
 }

@@ -66,6 +66,35 @@ export async function getReviewByUserIdForPost(postId: string, user: Session) {
     }
 }
 
+export async function getReviewsForUser(userId: string, page: number, pageSize: number, sort: SortReview = "newest") {
+    try {
+        const [reviews, totalCount] = await getReviews(page, pageSize, sort, userId)
+
+        const totalPages = Math.ceil(totalCount / pageSize);
+        const currentPage = page;
+        const hasNextPage = currentPage < totalPages;
+
+        const reviewItems: ReviewItem[] = reviews.map((review) => {
+            const { _count, ...rest } = review;
+            return {
+                ...rest,
+                commentCount: _count.comments,
+            };
+        });
+
+        return {
+            reviews: reviewItems,
+            totalCount,
+            currentPage,
+            totalPages,
+            hasNextPage,
+        };
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+}
+
 export async function getReviewsForPost(
     postId: string,
     page: number,
@@ -79,7 +108,7 @@ export async function getReviewsForPost(
             throw new ReviewServiceError("Post not Found", status.NOT_FOUND)
         }
 
-        const [reviews, totalCount] = await getReviews(postId, page, pageSize, sort);
+        const [reviews, totalCount] = await getReviews(page, pageSize, sort, undefined, postId);
 
         const totalPages = Math.ceil(totalCount / pageSize);
         const currentPage = page;

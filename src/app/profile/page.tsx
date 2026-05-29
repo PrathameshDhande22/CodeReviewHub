@@ -5,7 +5,6 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import RankCard from "@/components/profile/RankCard";
 import RecentActivity from "@/components/profile/RecentActivity";
-import RecentReviews from "@/components/profile/RecentReviews";
 import StatsGrid from "@/components/profile/StatsGrid";
 import { Metadata } from "next";
 
@@ -44,7 +43,7 @@ const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
         <div className="space-y-8">
           <ProfileTabs activeTab={activeTab} />
           {/* TODO: Remove these Recent Reviews and Recent Activity as they will be shown in the tab */}
-          <RecentReviews />
+
           <RecentActivity />
         </div>
       </div>

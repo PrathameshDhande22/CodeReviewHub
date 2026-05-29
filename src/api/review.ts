@@ -43,3 +43,14 @@ export async function acceptReviewApi(postId: string, reviewId: string): Promise
     })
     return response.json()
 }
+
+export async function getReviewsForUserApi(page: number, pagesize: number, sort: SortReview): Promise<APIResponse<PaginatedReviewsResponse | null>> {
+    const response = await fetch(`/api/review?page=${page}&pagesize=${pagesize}&sort=${sort}`,
+        {
+            method: "GET",
+            next: {
+                revalidate: 60
+            }
+        })
+    return response.json()
+}

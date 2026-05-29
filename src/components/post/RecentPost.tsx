@@ -76,7 +76,7 @@ const RecentPost = () => {
       {hasNextPage && (
         <button
           type="button"
-          className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white hover:bg-primary/90"
+          className="rounded-sm block w-full outline-2 outline-primary-dark cursor-pointer px-5 py-2 text-sm font-semibold text-primary "
           onClick={() => fetchNextPage()}
           disabled={isFetchingNextPage}
         >

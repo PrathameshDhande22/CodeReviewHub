@@ -69,20 +69,20 @@ const languages = [
 ];
 
 export const reputationLevels = [
-  { score: 0, levelname: "Newbie Reviewer" },
-  { score: 100, levelname: "Code Explorer" },
-  { score: 300, levelname: "Bug Hunter" },
-  { score: 700, levelname: "Helpful Reviewer" },
-  { score: 1200, levelname: "Insightful Analyst" },
-  { score: 2000, levelname: "Code Critic" },
-  { score: 3000, levelname: "Quality Guardian" },
-  { score: 4500, levelname: "Refactoring Expert" },
-  { score: 6000, levelname: "Architecture Advisor" },
-  { score: 8000, levelname: "Senior Reviewer" },
-  { score: 10000, levelname: "Principal Reviewer" },
-  { score: 12000, levelname: "Code Master" },
-  { score: 13500, levelname: "Elite Reviewer" },
-  { score: 15000, levelname: "Legendary Architect" },
+  { score: 0, levelname: "Newbie Reviewer", levelno: 1 },
+  { score: 100, levelname: "Code Explorer", levelno: 2 },
+  { score: 300, levelname: "Bug Hunter", levelno: 3 },
+  { score: 700, levelname: "Helpful Reviewer", levelno: 4 },
+  { score: 1200, levelname: "Insightful Analyst", levelno: 5 },
+  { score: 2000, levelname: "Code Critic", levelno: 6 },
+  { score: 3000, levelname: "Quality Guardian", levelno: 7 },
+  { score: 4500, levelname: "Refactoring Expert", levelno: 8 },
+  { score: 6000, levelname: "Architecture Advisor", levelno: 9 },
+  { score: 8000, levelname: "Senior Reviewer", levelno: 10 },
+  { score: 10000, levelname: "Principal Reviewer", levelno: 11 },
+  { score: 12000, levelname: "Code Master", levelno: 12 },
+  { score: 13500, levelname: "Elite Reviewer", levelno: 13 },
+  { score: 15000, levelname: "Legendary Architect", levelno: 14 },
 ];
 
 async function main() {
@@ -99,8 +99,8 @@ async function main() {
   await Promise.all(
     reputationLevels.map((value) =>
       prisma.reputation.upsert({
-        create: { levelname: value.levelname, score: value.score },
-        update: { levelname: value.levelname },
+        create: { levelname: value.levelname, score: value.score, levelno: value.levelno },
+        update: { levelname: value.levelname, score: value.score, levelno: value.levelno },
         where: { levelname: value.levelname },
       }),
     ),

@@ -74,6 +74,16 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
+CREATE TABLE "PostView" (
+    "id" TEXT NOT NULL,
+    "postId" TEXT NOT NULL,
+    "viewerId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PostView_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Review" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
@@ -144,6 +154,7 @@ CREATE TABLE "Reputation" (
     "id" SERIAL NOT NULL,
     "score" INTEGER NOT NULL,
     "levelname" TEXT NOT NULL,
+    "levelno" INTEGER NOT NULL,
 
     CONSTRAINT "Reputation_pkey" PRIMARY KEY ("id")
 );
@@ -158,16 +169,43 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 
 -- CreateIndex
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+-- CreateIndex
+CREATE INDEX "Post_authorId_createdAt_idx" ON "Post"("authorId", "createdAt" DESC);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PostView_postId_viewerId_key" ON "PostView"("postId", "viewerId");
+
+-- CreateIndex
+CREATE INDEX "Review_postId_isAccepted_createdAt_idx" ON "Review"("postId", "isAccepted", "createdAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Review_postId_reviewerId_key" ON "Review"("postId", "reviewerId");
+
+-- CreateIndex
+CREATE INDEX "Comment_postId_startlineno_createdAt_idx" ON "Comment"("postId", "startlineno", "createdAt" DESC);
+
+-- CreateIndex
+CREATE INDEX "Comment_postId_parentId_startlineno_idx" ON "Comment"("postId", "parentId", "startlineno");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
 
 -- CreateIndex
+CREATE INDEX "PostTag_postId_tagId_idx" ON "PostTag"("postId", "tagId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Languages_name_key" ON "Languages"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "UserReputation_userid_key" ON "UserReputation"("userid");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Reputation_levelname_key" ON "Reputation"("levelname");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Reputation_levelno_key" ON "Reputation"("levelno");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -177,6 +215,12 @@ ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PostView" ADD CONSTRAINT "PostView_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PostView" ADD CONSTRAINT "PostView_viewerId_fkey" FOREIGN KEY ("viewerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;

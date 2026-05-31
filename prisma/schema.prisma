@@ -8,22 +8,22 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(cuid())
-  name            String?
-  username        String?          @unique
-  email           String           @unique
-  password        String?
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  posts           Post[]
-  comments        Comment[]
-  reviews         Review[]
-  userReputations UserReputation[]
-  postViews       PostView[]
+  id             String          @id @default(cuid())
+  name           String?
+  username       String?         @unique
+  email          String          @unique
+  password       String?
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  posts          Post[]
+  comments       Comment[]
+  reviews        Review[]
+  userReputation UserReputation?
+  postViews      PostView[]
 }
 
 model Account {
@@ -179,7 +179,7 @@ model Languages {
 model UserReputation {
   id String @id @default(cuid())
 
-  userid String
+  userid String @unique
   user   User   @relation(fields: [userid], references: [id], onDelete: Cascade)
 
   reputationid Int
@@ -187,13 +187,12 @@ model UserReputation {
 
   score     Int
   updatedAt DateTime @updatedAt
-
-  @@index([userid])
 }
 
 model Reputation {
   id              Int              @id @default(autoincrement())
   score           Int
   levelname       String           @unique
+  levelno         Int              @unique
   userReputations UserReputation[]
 }

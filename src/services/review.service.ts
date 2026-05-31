@@ -5,6 +5,7 @@ import status from "http-status";
 import { Session } from "next-auth";
 import { getPostByIdService } from "./postCode.service";
 import { getPostById } from "@/db/postcode.repo";
+import { incrementUserReputationScore } from "@/db/reputation.repo";
 
 export class ReviewServiceError extends Error {
     constructor(
@@ -217,6 +218,10 @@ export async function acceptReviewForPost(reviewId: string, user: Session) {
         }
 
         const acceptedReview = await acceptReviewById(reviewId)
+
+        // Increase the score of the reviewer by 10 points
+        await incrementUserReputationScore(review.reviewerId, 10)
+
         return acceptedReview
     } catch (error) {
         console.error(error)

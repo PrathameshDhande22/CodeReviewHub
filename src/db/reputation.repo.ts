@@ -32,6 +32,34 @@ export async function addUserReputation(userId: string) {
     return reputation.id
 }
 
+export async function incrementUserReputationScore(userId: string, points: number) {
+    const [userReputation, allReputations] = await Promise.all([
+        getUserReputation(userId),
+        getReputations(), // already ordered by score asc
+    ]);
+
+    if (!userReputation) return;
+
+    const newScore = userReputation.score + points;
+
+    // Find the highest tier whose score threshold the new score meets or exceeds
+    const newTier = [...allReputations]
+        .reverse()
+        .find((tier) => newScore >= tier.score);
+
+    await prisma.userReputation.update({
+        where: { userid: userId },
+        data: {
+            score: newScore,
+            // only update the tier if a valid one was found and it differs
+            ...(newTier && newTier.id !== userReputation.reputationid
+                ? { reputationid: newTier.id }
+                : {}),
+        },
+    });
+}
+
+
 export async function getUserStats(userId: string): Promise<UserStats> {
     const reviewcount = prisma.review.count({
         where: {

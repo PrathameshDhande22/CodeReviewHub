@@ -1,61 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/prisma";
 import { registerSchema } from "@/schemas";
-import status from "http-status";
+import { RegisterServiceError, registerUser } from "@/services/auth.service";
 import { RegisterResponse } from "@/types";
-import { hash } from "bcryptjs";
+import status from "http-status";
+import { NextRequest, NextResponse } from "next/server";
 
-// TODO: When user register add the reputation for him as the newbie
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = registerSchema.parse(body);
 
-    const existingEmail = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-    if (existingEmail) {
-      return NextResponse.json<RegisterResponse>(
-        { error: "Email already in use", success: false },
-        { status: status.CONFLICT },
-      );
-    }
-
-    const existingUsername = data.username
-      ? await prisma.user.findUnique({ where: { username: data.username } })
-      : null;
-    if (existingUsername) {
-      return NextResponse.json<RegisterResponse>(
-        { error: "Username already in use", success: false },
-        { status: status.CONFLICT },
-      );
-    }
-
-    const passwordHash = await hash(data.password, 12);
-
-    await prisma.user.create({
-      data: {
-        name: data.fullname,
-        username: data.username,
-        email: data.email,
-        password: passwordHash,
-      },
-    });
+    await registerUser(data);
 
     return NextResponse.json<RegisterResponse>(
       { success: true },
-      {
-        status: status.OK,
-      },
+      { status: status.OK },
     );
   } catch (err: unknown) {
-    console.log(err);
-    if (err instanceof Error) {
+    console.error(err);
+
+    if (err instanceof RegisterServiceError) {
       return NextResponse.json<RegisterResponse>(
-        { error: "Internal Server Error", success: false },
-        { status: status.INTERNAL_SERVER_ERROR },
+        { error: err.message, success: false },
+        { status: err.statusCode },
       );
     }
+
     return NextResponse.json<RegisterResponse>(
       { error: "Unable to register", success: false },
       { status: status.INTERNAL_SERVER_ERROR },

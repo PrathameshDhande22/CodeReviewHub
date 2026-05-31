@@ -98,7 +98,7 @@ const PostEditForm = ({ post }: PostEditFormProps) => {
   const { data: tags } = useQuery({
     queryKey: ["tags"],
     queryFn: getTags,
-    staleTime: 60000,
+    staleTime: 600,
   });
   //#endregion
 

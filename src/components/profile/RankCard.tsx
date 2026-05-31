@@ -6,7 +6,21 @@ const jetbrains_mono = JetBrains_Mono({ subsets: ["latin"], weight: "400" });
 const inter = Inter({ subsets: ["latin"] });
 //#endregion
 
-const RankCard = async () => {
+type RankCardProps = {
+  score: number;
+  ranktitle: string;
+  nextScore?: number;
+  nextRankTitle?: string;
+};
+
+const RankCard = async ({
+  score,
+  ranktitle,
+  nextScore,
+  nextRankTitle,
+}: RankCardProps) => {
+  const progressPercent = nextScore ? Math.min((score / nextScore) * 100, 100) : 100;
+
   return (
     <div className="rounded-xl border border-white/8 bg-[#1c2539] p-5 backdrop-blur-sm">
       {/* Rank Label */}
@@ -17,12 +31,11 @@ const RankCard = async () => {
       </p>
 
       {/* XP Value */}
-      {/* TODO: Fetch the Rank Reputation  */}
       <div className="flex items-baseline gap-2 mb-1">
         <span
           className={`${space_grotesk.className} text-5xl font-black text-slate-200 tracking-tight`}
         >
-          12,480
+          {score.toLocaleString()}
         </span>
         <span
           className={`${space_grotesk.className} text-lg font-bold text-primary`}
@@ -32,24 +45,23 @@ const RankCard = async () => {
       </div>
 
       {/* Rank Title */}
-      {/* TODO: Assign the Title based on teh Rank */}
       <p
         className={`${inter.className} text-base font-semibold text-slate-300 mb-4`}
       >
-        Digital Architect
+        {ranktitle}
       </p>
 
       {/* XP Progress Bar */}
       <div className="w-full h-1.5 bg-slate-700/60 rounded-full overflow-hidden mb-3">
         <div
           className="h-full bg-linear-to-r from-emerald-400 to-primary rounded-full"
-          style={{ width: "72%" }}
+          style={{ width: `${progressPercent}%` }}
         />
       </div>
 
       {/* Progress Info */}
       <p className={`${inter.className} text-[11px] text-slate-400`}>
-        Next: Principal (15k)
+        Next: {nextRankTitle} ({nextScore?.toLocaleString()})
       </p>
     </div>
   );

@@ -100,7 +100,7 @@ const PostForm = () => {
   const { data: tags } = useQuery({
     queryKey: ["tags"],
     queryFn: getTags,
-    staleTime: 60000,
+    staleTime: 600,
     placeholderData: [],
   });
   //#endregion

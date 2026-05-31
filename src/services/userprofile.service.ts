@@ -1,5 +1,7 @@
+import { getReputations, getUserReputation, getUserStats } from "@/db/reputation.repo";
 import { getUser, updateUserProfile } from "@/db/user.repo";
 import { deleteFile, getPublicUrl, uploadFile } from "@/services/blobstorage";
+import { UserDashboard } from "@/types/profile";
 import { User } from "@generated/prisma/client";
 import status from "http-status";
 
@@ -24,7 +26,7 @@ const isMinioProfileImage = (imageUrl: string): boolean => {
   }
 };
 
-export async function getUserDetails(id: string): Promise<User | null> {
+export async function getUserDetails(id: string) {
   try {
     return getUser(id);
   } catch (error) {
@@ -112,4 +114,28 @@ export async function updateProfileService(
     console.error(error);
     throw error;
   }
+}
+
+
+export async function getUserDashboardData(userId: string): Promise<UserDashboard> {
+  // User Reputation
+  const allReputations = await getReputations();
+  const userReputation = await getUserReputation(userId)
+
+  const nextReputation = allReputations.find((rep) => rep.score > (userReputation?.score || 0)) || null;
+
+  return {
+    reputation: {
+      levelno: userReputation?.reputation.levelno || 0,
+      levelname: userReputation?.reputation.levelname || "",
+      score: userReputation?.score || 0
+    },
+    nextReputation: {
+      levelno: nextReputation?.levelno || 0,
+      levelname: nextReputation?.levelname || "",
+      score: nextReputation?.score || 0
+    },
+    userStats: await getUserStats(userId)
+  }
+
 }

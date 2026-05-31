@@ -8,17 +8,18 @@ const jetbrains_mono = JetBrains_Mono({ subsets: ["latin"], weight: "400" });
 interface StatItem {
   label: string;
   value: string;
-  indicator?: string;
 }
 
-// TODO: Fetch the Stat Item from the DB
-const stats: StatItem[] = [
-  { label: "PRIMARY_LANG", value: "Rust", indicator: "rust" },
-  { label: "REVIEWS_DONE", value: "428" },
-  { label: "STREAK_DAYS", value: "12" },
-];
+type StatsGridProps = {
+  reviewCount: number;
+  language: string;
+};
 
-const StatsGrid = () => {
+const StatsGrid = ({ reviewCount, language }: StatsGridProps) => {
+  const stats: StatItem[] = [
+    { label: "PRIMARY_LANG", value: language },
+    { label: "REVIEWS_ADDED", value: reviewCount.toString() },
+  ];
   return (
     <div className="grid grid-cols-2 gap-3">
       {stats.map((stat) => (
@@ -32,11 +33,8 @@ const StatsGrid = () => {
             {stat.label}
           </p>
           <div className="flex items-center gap-2">
-            {stat.indicator === "rust" && (
-              <span className="w-2 h-2 rounded-full bg-orange-400" />
-            )}
             <span
-              className={`${space_grotesk.className} text-xl font-bold text-white`}
+              className={`${space_grotesk.className} capitalize text-xl font-bold text-white`}
             >
               {stat.value}
             </span>

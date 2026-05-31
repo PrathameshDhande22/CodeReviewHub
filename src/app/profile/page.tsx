@@ -4,8 +4,8 @@ import { getOptionalServerSession } from "@/auth";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import RankCard from "@/components/profile/RankCard";
-import RecentActivity from "@/components/profile/RecentActivity";
 import StatsGrid from "@/components/profile/StatsGrid";
+import { getUserDashboardData } from "@/services/userprofile.service";
 import { Metadata } from "next";
 
 const validTabs = ["posts", "history", "comments"] as const;
@@ -20,6 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
+  const user = await getOptionalServerSession();
+
+  const userDashboarddata = await getUserDashboardData(user?.user.id!);
+
   // Validate the Tabs
   const { tab } = await searchParams;
   const activeTab: Tab = validTabs.includes(tab as Tab)
@@ -35,8 +39,16 @@ const UserProfile = async ({ searchParams }: PageProps<"/profile">) => {
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         {/* Left Sidebar - Sticky on desktop */}
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-          <RankCard />
-          <StatsGrid />
+          <RankCard
+            ranktitle={userDashboarddata.reputation.levelname}
+            score={userDashboarddata.reputation.score}
+            nextScore={userDashboarddata.nextReputation.score}
+            nextRankTitle={userDashboarddata.nextReputation.levelname}
+          />
+          <StatsGrid
+            reviewCount={userDashboarddata.userStats.reviewAdded}
+            language={userDashboarddata.userStats.primaryLanguage}
+          />
         </aside>
 
         {/* Right Content Area */}

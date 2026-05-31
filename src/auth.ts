@@ -1,10 +1,11 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { addUserReputation } from "@/db/reputation.repo";
 import { getUser } from "@/db/user.repo";
-import NextAuth, { AuthOptions, getServerSession } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "./prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
+import NextAuth, { AuthOptions, getServerSession } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { prisma } from "./prisma";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -106,6 +107,14 @@ export const authOptions: AuthOptions = {
       }
 
       return session;
+    },
+  },
+
+  events: {
+    async createUser({ user }) {
+      if (user.id) {
+        await addUserReputation(user.id);
+      }
     },
   },
 

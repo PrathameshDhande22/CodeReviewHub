@@ -62,7 +62,7 @@ export async function replyOnComment(commentId: string, content: string, userid:
         const replyId = await addComment(comment.postId, null, content, userid, null, comment.id)
         return replyId
     } catch (error) {
-        console.log(error)
+        console.error(error)
         throw error;
     }
 }

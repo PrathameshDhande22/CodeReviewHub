@@ -1,6 +1,5 @@
 import { getOptionalServerSession } from "@/auth";
 import { getUserDetails } from "@/services/userprofile.service";
-import { User } from "@generated/prisma/client";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -16,7 +15,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const ProfileHeader = async () => {
   const user = await getOptionalServerSession();
-  const userdetails: User | null = await getUserDetails(String(user?.user.id));
+  const userdetails = await getUserDetails(String(user?.user.id));
 
   if (!userdetails) redirect("/");
 
@@ -38,9 +37,8 @@ const ProfileHeader = async () => {
             />
           </div>
           {/* Level Badge */}
-          {/* TODO: Reputation and Level of the user needs to be Implmented */}
           <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-emerald-500 text-[9px] font-bold uppercase tracking-wider text-slate-200 px-2 py-0.5 rounded-sm w-17.5 text-center">
-            Level 0
+            Level {userdetails.userReputation?.reputation.levelno}
           </span>
         </div>
 

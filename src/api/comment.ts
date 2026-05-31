@@ -1,6 +1,6 @@
 import { CommentInputs, ReplyCommentInputs } from "@/schemas/comment";
 import { APIResponse } from "@/types";
-import { CommentCountOnPost, CommentUpdatedResponse, CommentWithAuthorAndReplyCount } from "@/types/comment";
+import { CommentCountOnPost, CommentUpdatedResponse, CommentWithAuthorAndReplyCount, PaginatedCommentsResponse } from "@/types/comment";
 
 export async function addCommentOnPostApi(postid: string, commentbody: CommentInputs): Promise<APIResponse<string>> {
     const response = await fetch(`/api/code-post/${postid}/comment`, {
@@ -53,5 +53,15 @@ export async function updateCommentReplyApi(commentId: string, postId: string, u
         method: "PATCH"
     })
 
+    return response.json()
+}
+
+export async function getCommentsForUserApi(page: number, pagesize: number): Promise<APIResponse<PaginatedCommentsResponse | null>> {
+    const response = await fetch(`/api/comment?page=${page}&pagesize=${pagesize}`, {
+        method: "GET",
+        next: {
+            revalidate: 40
+        }
+    })
     return response.json()
 }

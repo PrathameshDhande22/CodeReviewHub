@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import RecentPost from "../post/RecentPost";
 import RecentReviews from "./RecentReviews";
+import RecentComments from "./RecentComments";
 
 //#region Font Declaration
 const inter = Inter({ subsets: ["latin"] });
@@ -54,14 +55,8 @@ const ProfileTabs = ({ activeTab }: { activeTab: TabKey }) => {
       {/* Review History */}
       {activeTab === "history" && <RecentReviews />}
 
-      {/* TODO: Show the recent comments he added */}
-      {activeTab === "comments" && (
-        <div className="rounded-xl border border-white/8 bg-[#0d1424]/90 p-8 backdrop-blur-sm text-center">
-          <p className={`${inter.className} text-slate-500 text-sm`}>
-            No recent comments to display yet.
-          </p>
-        </div>
-      )}
+      {/* Recent Comments */}
+      {activeTab === "comments" && <RecentComments />}
     </div>
   );
 };

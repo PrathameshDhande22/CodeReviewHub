@@ -1,7 +1,7 @@
 import status from "http-status";
 import { getPostByIdService } from "./postCode.service";
-import { addComment, deleteComment, getComment, getCommentCount, getComments, updateComment } from "@/db/comment.repo";
-import { CommentCountOnPost } from "@/types/comment";
+import { addComment, deleteComment, getComment, getCommentCount, getComments, getCommentsForUserPaginated, updateComment } from "@/db/comment.repo";
+import { CommentCountOnPost, PaginatedCommentsResponse } from "@/types/comment";
 import { Session } from "next-auth";
 import { ReplyCommentInputs } from "@/schemas/comment";
 import { getReviewById } from "@/db/review.repo";
@@ -80,7 +80,7 @@ export async function getCommentsOnPost(postId: string, startLineNo: number) {
 
 export async function getRepliesOnComment(postId: string, commentId: string) {
     try {
-        return await getComments(postId, null, commentId)
+        return await getComments(postId, null, undefined, undefined, null, commentId)
     } catch (error) {
         console.error(error)
         throw error
@@ -112,9 +112,27 @@ export async function addCommentOnReview(reviewId: string, userId: string, conte
     }
 }
 
+export async function getCommentsForUser(userId: string, page: number, pageSize: number) {
+    try {
+        return await getComments(null, null, page, pageSize, userId);
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+}
+
+export async function getCommentsForUserService(userId: string, page: number, pageSize: number): Promise<PaginatedCommentsResponse> {
+    try {
+        return await getCommentsForUserPaginated(userId, page, pageSize);
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+}
+
 export async function getCommentsOnReview(postId: string, reviewId: string) {
     try {
-        return await getComments(postId, null, undefined, reviewId)
+        return await getComments(postId, null, undefined, undefined, null, undefined, reviewId)
     } catch (error) {
         console.error(error)
         throw error;

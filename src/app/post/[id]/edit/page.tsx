@@ -52,7 +52,7 @@ export default async function EditPostPage(
   }
 
   // Check the Author of the Post
-  if (post?.authorId !== session?.user.id) {
+  if (post?.authorId !== session?.user.id || post?.status !== "OPEN") {
     redirect(`/post/${id}`);
   }
 

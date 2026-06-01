@@ -39,7 +39,8 @@ export async function updatePostReview(post: PostCodeRequest, postId: string) {
         language: post.language,
         published: post.published,
         requireComments: post.requireComments,
-        requireReview: post.requireReview
+        requireReview: post.requireReview,
+        status: post.postStatus
       },
       select: {
         id: true

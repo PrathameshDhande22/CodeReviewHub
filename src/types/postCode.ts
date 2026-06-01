@@ -1,4 +1,4 @@
-import { Prisma } from "@generated/prisma/client";
+import { CodeStatus, Prisma } from "@generated/prisma/client";
 
 export interface PostCodeRequest {
   title: string;
@@ -10,6 +10,7 @@ export interface PostCodeRequest {
   published: boolean;
   requireComments: boolean;
   requireReview: boolean;
+  postStatus?: CodeStatus;
 }
 
 export type PostAuthor = {

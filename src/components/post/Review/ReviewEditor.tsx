@@ -32,6 +32,7 @@ import {
 import "@uiw/react-md-editor/markdown-editor.css";
 import dynamic from "next/dynamic";
 import { Inter, Space_Grotesk } from "next/font/google";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FaMarkdown, FaRegEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -58,6 +59,7 @@ const ReviewEditor = ({ postId }: ReviewEditorProps) => {
   const [mode, setMode] = useState<PreviewType>("edit");
   const [posting, setPosting] = useState<boolean>(false);
   const queryclient = useQueryClient();
+  const router = useRouter();
   //#endregion
 
   const handleValueChange = (value: string | undefined) => {
@@ -73,6 +75,7 @@ const ReviewEditor = ({ postId }: ReviewEditorProps) => {
       setPosting(false);
       toast.success("Review Added for the Post");
       setValue("");
+      router.refresh();
       queryclient.invalidateQueries({
         queryKey: ["reviews", postId],
         exact: false,

@@ -1,3 +1,4 @@
+import { CodeStatus } from "@generated/prisma/enums";
 import z from "zod";
 
 export const PostSchema = z
@@ -33,5 +34,12 @@ export const PostSchema = z
       });
     }
   });
+
+
+export const PostStatusSchema = z.object({
+  status: z.enum(Object.values(CodeStatus))
+})
+
+export type PostStatusInput = z.input<typeof PostStatusSchema>;
 export type PostReview = z.output<typeof PostSchema>;
 export type PostReviewInput = z.input<typeof PostSchema>;

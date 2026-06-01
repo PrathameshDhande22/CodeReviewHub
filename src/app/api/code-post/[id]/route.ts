@@ -1,8 +1,10 @@
 import { getOptionalServerSession } from "@/auth";
-import { deletePost, PostCodeServiceError, updatePostFormData } from "@/services/postCode.service";
+import { PostStatusSchema } from "@/schemas";
+import { deletePost, PostCodeServiceError, updatePostFormData, updatePostStatus } from "@/services/postCode.service";
 import { APIResponse } from "@/types";
 import status from "http-status";
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 
 export async function DELETE(ctx: RouteContext<'/api/code-post/[id]'>) {
     try {
@@ -86,6 +88,60 @@ export async function PUT(request: NextRequest, ctx: RouteContext<'/api/code-pos
             return NextResponse.json<APIResponse>({
                 status: "error",
                 message: "Failed to delete code post"
+            }, {
+                status: status.INTERNAL_SERVER_ERROR
+            })
+        }
+    }
+}
+
+export async function PATCH(request: NextRequest, ctx: RouteContext<'/api/code-post/[id]'>) {
+    try {
+        const { id } = await ctx.params;
+
+        const user = await getOptionalServerSession();
+
+        const postbody = await request.json();
+        const poststatusupdate = await PostStatusSchema.parse(postbody)
+
+        await updatePostStatus(id, poststatusupdate.status, user!)
+
+        return NextResponse.json<APIResponse>(
+            {
+                message: "Post status updated successfully",
+                status: "success"
+            },
+            {
+                status: status.OK
+            }
+        )
+
+    } catch (error) {
+        console.error(error)
+        if (error instanceof PostCodeServiceError) {
+            return NextResponse.json<APIResponse>(
+                {
+                    message: error.message,
+                    status: "invalid",
+                },
+                {
+                    status: error.statusCode,
+                },
+            );
+        }
+        else if (error instanceof ZodError) {
+            return NextResponse.json<APIResponse>(
+                {
+                    status: "invalid",
+                    message: error.issues.at(0)?.message ?? "Invalid input",
+                },
+                { status: status.UNPROCESSABLE_ENTITY },
+            );
+        }
+        else {
+            return NextResponse.json<APIResponse>({
+                status: "error",
+                message: "Failed to update the status of the Post"
             }, {
                 status: status.INTERNAL_SERVER_ERROR
             })

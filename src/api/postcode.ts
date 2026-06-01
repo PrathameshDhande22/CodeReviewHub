@@ -1,3 +1,4 @@
+import { PostStatusInput } from "@/schemas/post";
 import { APIResponse } from "@/types";
 import { CodeStatus, Sort } from "@/types/browse";
 import { PostListItem } from "@/types/postCode";
@@ -39,6 +40,14 @@ export async function updatePostApi(postid: string, formdata: FormData): Promise
   const response = await fetch(`/api/code-post/${postid}`, {
     method: "PUT",
     body: formdata
+  })
+  return response.json();
+}
+
+export async function updatePostStatusApi(postId: string, status: PostStatusInput): Promise<APIResponse> {
+  const response = await fetch(`/api/code-post/${postId}`, {
+    method: "PATCH",
+    body: JSON.stringify(status)
   })
   return response.json();
 }

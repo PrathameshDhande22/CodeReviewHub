@@ -3,6 +3,7 @@
 import { getOptionalServerSession } from "@/auth";
 import UserProfileImage from "@/components/auth/UserProfileImage";
 import PostStatusBadge from "@/components/post/PostStatusBadge";
+import PostStatusUpdate from "@/components/post/PostStatusUpdate";
 import Reviews from "@/components/post/Review/Reviews";
 import TagDisplay from "@/components/post/TagDisplay";
 import TimeAgoComponent from "@/components/post/TimeAgoComponent";
@@ -140,18 +141,25 @@ export default async function PostPage({ params }: PageProps<"/post/[id]">) {
               </span>
             </div>
           </div>
-          {/* Edit Link */}
-          {owner && post?.status === "OPEN" && (
-            <div className={cn(inter.className, "text-sm bg-")}>
-              <Link
-                href={`/post/${id}/edit`}
-                className="flex flex-row gap-1 items-center p-2 text-slate-300 hover:text-slate-400 bg-[#212b41] hover:bg-white/5 transition-colors rounded-xl px-4"
-              >
-                <FiEdit2 className="text-sm" />
-                <span>Edit</span>
-              </Link>
-            </div>
-          )}
+          <div className="flex flex-row flex-wrap gap-2 items-center">
+            {/* Status Update */}
+            {owner && post.status !== "ACCEPTED" && (
+              <PostStatusUpdate status={post.status} postId={post.id} />
+            )}
+
+            {/* Edit Link */}
+            {owner && post?.status === "OPEN" && (
+              <div className={cn(inter.className, "text-sm bg-")}>
+                <Link
+                  href={`/post/${id}/edit`}
+                  className="flex flex-row gap-1 items-center p-2 text-slate-300 hover:text-slate-400 bg-[#212b41] hover:bg-white/5 transition-colors rounded-xl px-4"
+                >
+                  <FiEdit2 className="text-sm" />
+                  <span>Edit</span>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <TagDisplay tag={post?.postTags.map((t) => t.tag.name) ?? []} />

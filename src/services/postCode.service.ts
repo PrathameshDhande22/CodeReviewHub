@@ -12,8 +12,9 @@ import { createTags } from "@/db/tag.repo";
 import { deleteFile, getFileContent, uploadFile } from "@/services/blobstorage";
 import { getLanguages } from "@/services/language.service";
 import { PostCodeRequest, PostListItem, PostWithRelations, PropertyBag } from "@/types/postCode";
-import { Languages } from "@generated/prisma/client";
+import { CodeStatus, Languages } from "@generated/prisma/client";
 import status from "http-status";
+import { Session } from "next-auth";
 
 export class PostCodeServiceError extends Error {
   constructor(
@@ -304,4 +305,33 @@ export async function updatePost(postId: string, postcode: PostCodeRequest, tags
     console.error(error);
     throw error;
   }
+}
+
+export async function updatePostStatus(postId: string, postStatus: CodeStatus, user: Session) {
+  const posttoupdate = await getPostById(postId, undefined);
+
+  if (!posttoupdate) {
+    throw new PostCodeServiceError("Post Not Found", status.NOT_FOUND)
+  }
+
+  else if (posttoupdate.status === "ACCEPTED") {
+    throw new PostCodeServiceError("Cannot update status of a post which is not opened", status.NOT_ACCEPTABLE)
+  }
+
+  else if (posttoupdate.authorId !== user.user.id) {
+    throw new PostCodeServiceError("Unauthorized to update status of this post", status.UNAUTHORIZED);
+  }
+
+  return await updatePostReview({
+    title: posttoupdate.title,
+    description: posttoupdate.description!,
+    code: posttoupdate.code,
+    postStatus: postStatus,
+    authorId: posttoupdate.authorId,
+    language: posttoupdate.language,
+    blobName: posttoupdate.blobName,
+    published: posttoupdate.published,
+    requireComments: posttoupdate.requireComments,
+    requireReview: posttoupdate.requireReview,
+  }, postId)
 }

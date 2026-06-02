@@ -35,7 +35,7 @@ export async function addUserReputation(userId: string) {
 export async function incrementUserReputationScore(userId: string, points: number) {
     const [userReputation, allReputations] = await Promise.all([
         getUserReputation(userId),
-        getReputations(), // already ordered by score asc
+        getReputations(),
     ]);
 
     if (!userReputation) return;
@@ -51,7 +51,6 @@ export async function incrementUserReputationScore(userId: string, points: numbe
         where: { userid: userId },
         data: {
             score: newScore,
-            // only update the tier if a valid one was found and it differs
             ...(newTier && newTier.id !== userReputation.reputationid
                 ? { reputationid: newTier.id }
                 : {}),

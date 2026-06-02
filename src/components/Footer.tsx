@@ -37,13 +37,12 @@ const Footer = () => {
       <div className="font-semibold text-sm text-neutral-500">
         <ul className="flex flex-row items-center gap-3">
           <li>
-            {/* TODO: handle the Links */}
-            <Link href={"/"}>
+            <Link href={"/legal/terms-and-conditions"}>
               <span>TERMS OF SERVICE</span>
             </Link>
           </li>
           <li>
-            <Link href={"/"}>
+            <Link href={"/legal/privacy-policy"}>
               <span>PRIVACY POLICY</span>
             </Link>
           </li>

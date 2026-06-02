@@ -53,16 +53,12 @@
 
 .bg-hero {
   background:
-    radial-gradient(
-      circle at 25% 25%,
+    radial-gradient(circle at 25% 25%,
       rgba(59, 130, 246, 0.18),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 75% 50%,
+      transparent 40%),
+    radial-gradient(circle at 75% 50%,
       rgba(14, 165, 233, 0.12),
-      transparent 45%
-    ),
+      transparent 45%),
     #020617;
 }
 
@@ -181,8 +177,94 @@
   background: var(--primary-dark);
 }
 
-body .w-md-editor-text-pre > code,
+body .w-md-editor-text-pre>code,
 body .w-md-editor-text-input {
   font-size: 16px !important;
   line-height: 18px !important;
+}
+
+.legal-prose {
+  line-height: 1.8;
+  font-size: 1rem;
+  color: #cbd5e1;
+
+  & h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 1.2rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    letter-spacing: -0.015em;
+  }
+
+  & h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin: 1.2rem 0 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  & h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 0.5rem 0 0.5rem;
+  }
+
+  & p {
+    margin: 0.2rem 0;
+  }
+
+  & ul,
+  & ol {
+    padding-left: 1.5rem;
+    margin: 0.3rem 0;
+  }
+
+  & li::marker {
+    color: #7c3aed;
+  }
+
+  & hr {
+    border: none;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    margin: 0.8rem 0;
+  }
+
+  & strong {
+    color: #f1f5f9;
+    font-weight: 600;
+  }
+
+  & a {
+    color: #818cf8;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+
+  & a:hover {
+    color: #a78bfa;
+  }
+
+  & code {
+    background: rgba(124, 58, 237, 0.15);
+    color: #c4b5fd;
+    padding: 0.15em 0.45em;
+    border-radius: 0.3em;
+    font-size: 0.875em;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  & blockquote {
+    border-left: 3px solid #7c3aed;
+    padding: 0.6rem 1rem;
+    margin: 1.25rem 0;
+    background: rgba(124, 58, 237, 0.05);
+    border-radius: 0 0.4rem 0.4rem 0;
+    color: #94a3b8;
+    font-style: italic;
+  }
 }

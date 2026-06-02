@@ -73,11 +73,17 @@ export default async function Register() {
           >
             <p className="space-x-1">
               <span>By signing up, you agree to the</span>
-              <Link href={"/terms"} className="text-primary hover:underline">
+              <Link
+                href={"/legal/terms-and-conditions"}
+                className="text-primary hover:underline"
+              >
                 Terms of Service
               </Link>
               <span>and acknowledge our</span>
-              <Link href={"/privacy"} className="text-primary hover:underline">
+              <Link
+                href={"/legal/privacy-policy"}
+                className="text-primary hover:underline"
+              >
                 Privacy Policy.
               </Link>
             </p>

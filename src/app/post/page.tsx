@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter, Space_Grotesk } from "next/font/google";
 
+// TODO: Add the metadata for the create post page
 export const metadata: Metadata = {
   title: "Initiate New Review",
 };
@@ -21,7 +22,6 @@ const PostForm = dynamic(() => import("@/components/post/PostForm"));
 //#endregion
 
 export default async function CreatePost() {
-
   return (
     <div className="md:py-14 py-5 md:px-14 px-5 bg-[#0a1429] h-full w-full">
       <div className="space-y-2">

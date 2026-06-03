@@ -6,7 +6,7 @@ import status from "http-status";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export async function DELETE(ctx: RouteContext<'/api/code-post/[id]'>) {
+export async function DELETE(request: NextRequest, ctx: RouteContext<'/api/code-post/[id]'>) {
     try {
         const { id } = await ctx.params;
 

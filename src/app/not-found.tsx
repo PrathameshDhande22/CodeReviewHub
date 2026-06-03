@@ -60,14 +60,14 @@ export default function NotFound() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-10">
           <Link
-            href="/dashboard"
+            href="/browse"
             className="flex items-center gap-3 bg-linear-to-r from-primary to-primary-dark text-slate-900 px-7 py-3 rounded-md font-bold transition-all w-full sm:w-auto justify-center text-sm"
           >
             <MdOutlineDashboard className="text-xl" />
             <span>Return to Dashboard</span>
           </Link>
           <Link
-            href="/snippets"
+            href="/post"
             className="flex items-center gap-3 bg-slate-800/40 hover:bg-slate-800/80 text-slate-200 border border-slate-700/50 px-7 py-3 rounded-md font-semibold transition-all w-full sm:w-auto justify-center text-sm"
           >
             <LuSearch className="text-xl" />
@@ -77,13 +77,10 @@ export default function NotFound() {
 
         {/* Contact Link */}
         <div className="flex justify-center mt-2">
-          <Link
-            href="/support"
-            className="flex items-center gap-2 text-slate-400 hover:text-sky-300 tracking-[0.08em] text-sm transition-colors uppercase font-medium"
-          >
+          <div className="flex items-center gap-2 text-slate-400 hover:text-sky-300 tracking-[0.08em] text-sm transition-colors uppercase font-medium">
             <RiCustomerService2Line className="text-lg" />
             <span>Contact System Support</span>
-          </Link>
+          </div>
         </div>
       </div>
     </div>

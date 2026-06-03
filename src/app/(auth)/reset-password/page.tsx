@@ -1,5 +1,5 @@
-import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { getOptionalServerSession } from "@/auth";
+import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
@@ -15,21 +15,27 @@ const inter = Inter({
 });
 //#endregion
 
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Reset Password",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 export default async function ResetPassword({
   searchParams,
-}: {
-  searchParams: Promise<{ email?: string }>;
-}) {
+}: PageProps<"/reset-password">) {
   const session = await getOptionalServerSession();
   if (session?.user) {
     redirect("/");
   }
 
   const { email } = await searchParams;
+  const prefillEmail = Array.isArray(email) ? email[0] : email;
 
   return (
     <div
@@ -47,7 +53,7 @@ export default async function ResetPassword({
           </span>
         </div>
 
-        <ResetPasswordForm prefillEmail={email} />
+        <ResetPasswordForm prefillEmail={prefillEmail} />
 
         <div
           className={`${inter.className} mt-4 text-gray-400 text-sm text-center`}

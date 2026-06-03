@@ -1,11 +1,13 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLegalPageBySlug, getLegalSlugs } from "@/lib/content";
+import { BASE_URL, SITE_NAME_SHORT, TWITTER_HANDLE } from "@/lib/seo";
 
 export function generateStaticParams() {
   return getLegalSlugs();
 }
 
+//#region SEO Metadata
 export async function generateMetadata({
   params,
 }: PageProps<"/legal/[slug]">): Promise<Metadata> {
@@ -13,40 +15,41 @@ export async function generateMetadata({
   const page = await getLegalPageBySlug(slug);
 
   if (!page) {
-    return { title: "Page Not Found | Code Review Hub" };
+    return { title: "Page Not Found" };
   }
 
-  const canonicalUrl = `https://codereviewhub.com/legal/${page.slug}`;
+  const canonicalUrl = `${BASE_URL}/legal/${page.slug}`;
 
   return {
-    title: `${page.title} | Code Review Hub`,
+    title: page.title,
     description: page.description,
     alternates: {
       canonical: canonicalUrl,
-    },
-    openGraph: {
-      title: `${page.title} | Code Review Hub`,
-      description: page.description,
-      url: canonicalUrl,
-      siteName: "Code Review Hub",
-      type: "article",
-      publishedTime: page.date,
-      authors: page.author ? [page.author] : undefined,
-      locale: "en_US",
-    },
-    twitter: {
-      card: "summary",
-      title: `${page.title} | Code Review Hub`,
-      description: page.description,
-      site: "@CodeReviewHub",
     },
     robots: {
       index: true,
       follow: true,
       googleBot: { index: true, follow: true },
     },
+    openGraph: {
+      type: "article",
+      url: canonicalUrl,
+      title: `${page.title} | ${SITE_NAME_SHORT}`,
+      description: page.description,
+      siteName: SITE_NAME_SHORT,
+      locale: "en_US",
+      publishedTime: page.date,
+      authors: page.author ? [page.author] : undefined,
+    },
+    twitter: {
+      card: "summary",
+      title: `${page.title} | ${SITE_NAME_SHORT}`,
+      description: page.description,
+      site: TWITTER_HANDLE,
+    },
   };
 }
+// #endregion
 
 export default async function LegalPage({
   params,

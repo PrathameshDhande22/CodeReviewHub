@@ -1,5 +1,12 @@
 import { getOptionalServerSession } from "@/auth";
 import CodeSnippet from "@/components/CodeSnippet";
+import {
+  canonicalUrl,
+  SITE_NAME,
+  SITE_NAME_SHORT,
+  TWITTER_HANDLE,
+} from "@/lib/seo";
+import { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -9,6 +16,36 @@ import { FiArrowUpRight, FiCode, FiUsers } from "react-icons/fi";
 import { GoCommentDiscussion } from "react-icons/go";
 import { LuBadgeCheck } from "react-icons/lu";
 import { MdTerminal } from "react-icons/md";
+
+//#region SEO Metadata
+export const metadata: Metadata = {
+  title: {
+    absolute: SITE_NAME,
+  },
+  description:
+    "The definitive collaborative platform where Stack Overflow meets GitHub PRs. Post your code, receive expert line-by-line reviews, and build your reputation as a Digital Architect.",
+  alternates: {
+    canonical: canonicalUrl("/"),
+  },
+  openGraph: {
+    type: "website",
+    url: canonicalUrl("/"),
+    title: SITE_NAME,
+    description:
+      "Post code · Receive expert reviews · Build your reputation. The platform for serious developers.",
+    siteName: SITE_NAME_SHORT,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description:
+      "Post code · Receive expert reviews · Build your reputation. The platform for serious developers.",
+    site: TWITTER_HANDLE,
+    creator: TWITTER_HANDLE,
+  },
+};
+// #endregion
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({

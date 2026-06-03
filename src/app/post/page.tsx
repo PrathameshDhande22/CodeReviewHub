@@ -2,10 +2,16 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter, Space_Grotesk } from "next/font/google";
 
-// TODO: Add the metadata for the create post page
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Initiate New Review",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({

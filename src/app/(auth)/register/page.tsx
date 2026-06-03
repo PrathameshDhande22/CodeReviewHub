@@ -1,6 +1,7 @@
 import RegisterForm from "@/components/auth/RegisterForm";
 import { getOptionalServerSession } from "@/auth";
 import CodeSnippet from "@/components/CodeSnippet";
+
 import { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
@@ -16,10 +17,16 @@ const inter = Inter({
 });
 //#endregion
 
-// TODO: Add the Metadata for the Register Page
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Register",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 export default async function Register() {
   const session = await getOptionalServerSession();

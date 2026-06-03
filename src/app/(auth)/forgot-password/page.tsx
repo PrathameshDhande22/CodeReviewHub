@@ -15,9 +15,16 @@ const inter = Inter({
 });
 //#endregion
 
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Forgot Password",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 export default async function ForgotPassword() {
   const session = await getOptionalServerSession();

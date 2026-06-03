@@ -2,15 +2,23 @@
 
 import { getOptionalServerSession } from "@/auth";
 import UpdateProfileModal from "@/components/profile/UpdateProfileModal";
+
 import { getUserDetails } from "@/services/userprofile.service";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+//#region SEO Metadata
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Update Profile",
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: { index: false, follow: false },
+    },
   };
 }
+// #endregion
 
 export default async function ProfileUpdatePage() {
   const session = await getOptionalServerSession();

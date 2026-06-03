@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import Providers from "@/providers/provider";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { canonicalUrl } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -13,6 +14,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 export const viewport: Viewport = {
   initialScale: 1.0,
   width: "device-width",
+  colorScheme: "dark",
 };
 
 export const metadata: Metadata = {
@@ -20,11 +22,13 @@ export const metadata: Metadata = {
     default: "CodeReview Hub - The Digital Architect",
     template: "%s | CodeReview Hub",
   },
-  description: "The Digital Architect",
+  description:
+    "A platform for developers to post code, receive constructive reviews, and collaborate through discussions and threaded comments.",
   robots: {
     follow: true,
     index: true,
     googleBot: {
+      follow: true,
       index: true,
     },
   },
@@ -33,6 +37,40 @@ export const metadata: Metadata = {
     { name: "Prathamesh", url: "https://github.com/PrathameshDhande22" },
   ],
   creator: "Prathamesh Dhande",
+  abstract:
+    "A platform for developers to post code, receive constructive reviews, and collaborate through discussions and threaded comments.",
+  keywords: [
+    "code review",
+    "developer community",
+    "peer code review",
+    "software development",
+    "code feedback",
+    "programming community",
+    "code quality",
+    "clean code",
+    "developer collaboration",
+    "coding discussions",
+    "software engineering",
+    "source code review",
+    "nextjs",
+    "react",
+    "typescript",
+    "dotnet",
+    "java",
+  ],
+  category: "Technology",
+  classification: "Software Development",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    countryName: "India",
+    description:
+      "A platform for developers to post code, receive constructive reviews, and collaborate through discussions and threaded comments.",
+    determiner: "a",
+    siteName: "CodeReview Hub - The Digital Architect",
+    title: "CodeReview Hub",
+    url: canonicalUrl("/"),
+  },
 };
 //#endregion
 

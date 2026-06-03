@@ -1,18 +1,40 @@
 "use server";
 
-import BrowsePosts from "@/components/post/BrowsePosts";
 import BrowseFilters from "@/components/post/BrowseFilters";
+import BrowsePosts from "@/components/post/BrowsePosts";
+import { canonicalUrl, SITE_NAME_SHORT, TWITTER_HANDLE } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
-import { Suspense } from "react";
 
+//#region SEO Metadata
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Browse Posts",
-    description: "",
+    title: "Browse Code Posts",
+    description:
+      "Explore all code review posts from the community. Filter by language, status, or sort by newest. Find code to review or get your own code reviewed.",
+    alternates: {
+      canonical: canonicalUrl("/browse"),
+    },
+    openGraph: {
+      type: "website",
+      url: canonicalUrl("/browse"),
+      title: `Browse Code Posts | ${SITE_NAME_SHORT}`,
+      description:
+        "Explore all code review posts from the community. Filter by language, status, or sort by newest.",
+      siteName: SITE_NAME_SHORT,
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Browse Code Posts | ${SITE_NAME_SHORT}`,
+      description:
+        "Explore all code review posts from the community. Filter by language, status, or sort by newest.",
+      site: TWITTER_HANDLE,
+    },
   };
 }
+// #endregion
 
 //#region Font Declaration
 const space_grotesk = Space_Grotesk({

@@ -2,6 +2,7 @@
 
 import { getOptionalServerSession } from "@/auth";
 import PostEditForm from "@/components/post/PostEditForm";
+import { getPostById } from "@/db/postcode.repo";
 import {
   getPostByIdService,
   PostCodeServiceError,
@@ -18,13 +19,24 @@ const space_grotesk = Space_Grotesk({
 });
 //#endregion
 
-// TODO: Add the Metadata for the edit Post Page
-export async function generateMetadata(): Promise<Metadata> {
-  const session = await getOptionalServerSession();
+//#region SEO Metadata
+export async function generateMetadata({
+  params,
+}: PageProps<"/post/[id]/edit">): Promise<Metadata> {
+  const { id } = await params;
+
+  const post = await getPostById(id);
+
   return {
-    title: `Edit Post`,
+    title: post ? `Edit: ${post.title}` : "Edit Post",
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: { index: false, follow: false },
+    },
   };
 }
+// #endregion
 
 export default async function EditPostPage(
   params: PageProps<"/post/[id]/edit">,

@@ -14,9 +14,16 @@ const inter = Inter({
 });
 //#endregion
 
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Change Password",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 export default async function ChangePassword() {
   const session = await getOptionalServerSession();

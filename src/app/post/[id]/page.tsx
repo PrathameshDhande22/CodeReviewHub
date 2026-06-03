@@ -7,6 +7,8 @@ import PostStatusUpdate from "@/components/post/PostStatusUpdate";
 import Reviews from "@/components/post/Review/Reviews";
 import TagDisplay from "@/components/post/TagDisplay";
 import TimeAgoComponent from "@/components/post/TimeAgoComponent";
+import { getPostById } from "@/db/postcode.repo";
+import { canonicalUrl, SITE_NAME_SHORT, TWITTER_HANDLE } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import {
   addViewToPost,
@@ -34,10 +36,66 @@ const inter = Inter({
 });
 //#endregion
 
-// TODO: Add the seo metadata for the post.
-export async function generateMetadata(): Promise<Metadata> {
-  return {};
+//#region SEO Metadata
+export async function generateMetadata({
+  params,
+}: PageProps<"/post/[id]">): Promise<Metadata> {
+  const { id } = await params;
+
+  const post = await getPostById(id, undefined, {
+    IncludeAuther: true,
+    IncludeTags: true,
+  });
+
+  if (!post) {
+    return { title: "Post Not Found" };
+  }
+
+  const postUrl = canonicalUrl(`/post/${id}`);
+  const tags = post.postTags.map((t) => t.tag.name);
+  const authorName = post.author?.name ?? "Anonymous";
+
+  return {
+    title: post.title,
+    description: post.description
+      ? post.description.slice(0, 160)
+      : `Review this ${post.language} code snippet on ${SITE_NAME_SHORT}. Status: ${post.status}.`,
+    keywords: [post.language, ...tags, "code review", "peer review"],
+    authors: [{ name: authorName }],
+    alternates: {
+      canonical: postUrl,
+    },
+    robots: {
+      index: post.published,
+      follow: true,
+      googleBot: { index: post.published, follow: true },
+    },
+    openGraph: {
+      type: "article",
+      url: postUrl,
+      title: post.title,
+      description: post.description
+        ? post.description.slice(0, 160)
+        : `Review this ${post.language} code snippet on ${SITE_NAME_SHORT}.`,
+      siteName: SITE_NAME_SHORT,
+      locale: "en_US",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      authors: [authorName],
+      tags: [post.language, ...tags],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description
+        ? post.description.slice(0, 160)
+        : `${post.language} code review on ${SITE_NAME_SHORT}`,
+      site: TWITTER_HANDLE,
+      creator: TWITTER_HANDLE,
+    },
+  };
 }
+// #endregion
 
 //#region Dynamic Imports
 const CodeDisplay = dynamic(() => import("@/components/post/CodeDisplay"));

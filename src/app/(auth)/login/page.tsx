@@ -15,10 +15,16 @@ const inter = Inter({
 });
 //#endregion
 
-// TODO: Add the Metadata for the Login Page similar to the register page
+//#region SEO Metadata
 export const metadata: Metadata = {
   title: "Login",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
+//#endregion
 
 export default async function Login() {
   const session = await getOptionalServerSession();

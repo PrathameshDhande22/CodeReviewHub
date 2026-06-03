@@ -1,7 +1,7 @@
 "use client";
 
-import FormField from "@/components/auth/FormField";
 import { resetPasswordApi } from "@/api/auth";
+import FormField from "@/components/auth/FormField";
 import { resetPasswordSchema, type ResetPasswordInputs } from "@/schemas/password";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Inter, Space_Grotesk } from "next/font/google";

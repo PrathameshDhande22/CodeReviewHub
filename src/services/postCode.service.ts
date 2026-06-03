@@ -116,7 +116,7 @@ async function validatePostFromFormData(postbody: FormData, userId: string): Pro
 
   if (postbody.has("codefile")) {
     const uploadedFile = postbody.get("codefile") as File;
-    const uploadedFileExtension = "." + uploadedFile.name.split(".")[1];
+    const uploadedFileExtension = "." + uploadedFile.name.split(".").slice(-1)[0];
     const validExtension = languages.find(
       (value) => value.extension === uploadedFileExtension,
     );

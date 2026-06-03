@@ -76,7 +76,7 @@ const PostForm = () => {
   //#endregion
 
   const handleLanguageChangeOnFileUpload = (filename: string) => {
-    const extension = "." + filename.split(".")[1];
+    const extension = "." + filename.split(".").slice(-1)[0];
     const language = languages?.find((lang) => lang.extension === extension);
 
     if (language) {

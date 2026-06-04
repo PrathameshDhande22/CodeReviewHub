@@ -205,26 +205,6 @@ The production server runs on port `3000` by default. The build will show a rout
 
 ---
 
-## How It Works — The Review Flow
-
-```
-1. Post Code
-   └── Upload a snippet or file → Choose language, tags, and settings
-
-2. Get Reviewed
-   ├── Other users leave inline comments on specific lines
-   └── Reviewers write full markdown reviews
-
-3. Accept & Close
-   ├── Post author accepts the best review → Reviewer earns +10 reputation points
-   └── Post status changes from OPEN → ACCEPTED
-
-4. Build Reputation
-   └── Earn levels (Digital Architect ranks) based on accumulated reputation score
-```
-
----
-
 ## License
 
 This project is licensed under the terms in the [LICENSE](LICENSE) file.

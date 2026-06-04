@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { IoIosCloseCircle } from "react-icons/io";
 import { MdUploadFile } from "react-icons/md";
@@ -108,20 +108,30 @@ const PostForm = () => {
   //#region Monaco Editor
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const isDisposed = useRef(false);
+
+  useEffect(() => {
+    isDisposed.current = false;
+    return () => {
+      isDisposed.current = true;
+      editorRef.current = null;
+      monacoRef.current = null;
+    };
+  }, []);
 
   const handleEditorDidMount: OnMount = (editorInstance, monaco: Monaco) => {
+    if (isDisposed.current) return;
     monacoRef.current = monaco;
     editorRef.current = editorInstance;
   };
 
-  const handleLanguageChange = (language: string) => {
-    if (monacoRef.current) {
-      monacoRef.current?.editor.setModelLanguage(
-        monacoRef.current.editor.getModels()[0],
-        language.toLowerCase(),
-      );
-    }
-  };
+  const handleLanguageChange = useCallback((language: string) => {
+    if (isDisposed.current || !monacoRef.current) return;
+    monacoRef.current.editor.setModelLanguage(
+      monacoRef.current.editor.getModels()[0],
+      language.toLowerCase(),
+    );
+  }, []);
 
   const handleCodeEditorValueChange = (value: string | undefined) => {
     setValue("code", String(value ?? ""), {
@@ -140,8 +150,10 @@ const PostForm = () => {
       shouldDirty: true,
       shouldValidate: true,
     });
-    editorRef.current?.setValue(prevCodeState);
-    editorRef.current?.updateOptions({ readOnly: false });
+    if (!isDisposed.current && editorRef.current) {
+      editorRef.current.setValue(prevCodeState);
+      editorRef.current.updateOptions({ readOnly: false });
+    }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -385,10 +397,9 @@ const PostForm = () => {
                       className={`mt-1 ${inter.className} text-sm`}
                       classNames={{
                         control: (state) =>
-                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${
-                            state.isFocused
-                              ? "ring-2 ring-primary outline-none"
-                              : ""
+                          `bg-[#191f2c] text-white rounded-lg h-[35px] px-3 ${state.isFocused
+                            ? "ring-2 ring-primary outline-none"
+                            : ""
                           }`,
                         valueContainer: () => "gap-2 py-0",
                         singleValue: () => "text-white",
@@ -403,8 +414,7 @@ const PostForm = () => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${
-                            state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}
@@ -501,8 +511,7 @@ const PostForm = () => {
                           "mt-2 overflow-hidden rounded-lg border border-slate-700 bg-[#191f2c] shadow-lg",
                         menuList: () => "py-1",
                         option: (state) =>
-                          `cursor-pointer px-3 py-2 text-sm text-white ${
-                            state.isFocused ? "bg-[#33415c]" : ""
+                          `cursor-pointer px-3 py-2 text-sm text-white ${state.isFocused ? "bg-[#33415c]" : ""
                           } ${state.isSelected ? "bg-primary text-black" : ""}`,
                         noOptionsMessage: () => "px-3 py-2 text-slate-400",
                       }}

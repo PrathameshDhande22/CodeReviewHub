@@ -5,6 +5,7 @@ import { remark } from "remark";
 import remarkHtml from "remark-html";
 import remarkFrontmatter from "remark-frontmatter";
 import { LegalPage, LegalPageFrontmatter } from "@/types/legal";
+import { cacheLife } from "next/cache";
 
 const CONTENTS_DIR = path.join(process.cwd(), "src", "contents");
 
@@ -36,7 +37,10 @@ async function readContentFile(filename: string): Promise<LegalPage> {
     contentHtml,
   };
 }
-export function getLegalSlugs(): { slug: string }[] {
+
+export async function getLegalSlugs(): Promise<{ slug: string }[]> {
+  "use cache";
+  cacheLife("days");
   const files = fs
     .readdirSync(CONTENTS_DIR)
     .filter((file) => file.endsWith(".md"));
@@ -49,6 +53,8 @@ export function getLegalSlugs(): { slug: string }[] {
 export async function getLegalPageBySlug(
   slug: string
 ): Promise<LegalPage | null> {
+  "use cache";
+  cacheLife("days");
   const filename = `${slug}.md`;
   const fullPath = path.join(CONTENTS_DIR, filename);
 

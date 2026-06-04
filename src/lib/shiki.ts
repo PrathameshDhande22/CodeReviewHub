@@ -1,5 +1,6 @@
 "use server";
 
+import { cacheLife } from "next/cache";
 import {
   createHighlighter,
   type Highlighter,
@@ -27,6 +28,8 @@ async function getHighlighter(lang: string) {
 }
 
 export async function highlightCode(code: string, lang: string) {
+  "use cache"
+  cacheLife("hours")
   const h = await getHighlighter(lang);
 
   return h.codeToHtml(code, {
@@ -44,6 +47,8 @@ export async function highlightCodeByLine(
   code: string,
   lang: string
 ): Promise<Token[][]> {
+  "use cache";
+  cacheLife("hours");
   const h = await getHighlighter(lang);
 
   const result = h.codeToTokens(code, {

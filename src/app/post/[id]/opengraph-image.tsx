@@ -1,4 +1,5 @@
 import { getPostById } from "@/db/postcode.repo";
+import { cacheLife } from "next/cache";
 import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
@@ -11,6 +12,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default async function Image({ params }: PageProps<"/post/[id]">) {
+  "use cache";
+  cacheLife("hours");
   const { id } = await params;
   const post = await getPostById(id, undefined, {
     IncludeAuther: true,

@@ -15,6 +15,7 @@ import { PostCodeRequest, PostListItem, PostWithRelations, PropertyBag } from "@
 import { CodeStatus, Languages } from "@generated/prisma/client";
 import status from "http-status";
 import { Session } from "next-auth";
+import { cacheLife } from "next/cache";
 
 export class PostCodeServiceError extends Error {
   constructor(
@@ -192,6 +193,8 @@ export async function getPost(
   sort?: "newest" | "oldest",
   statusfilter?: "all" | "accepted" | "open",
 ): Promise<PostListItem[]> {
+  "use cache";
+  cacheLife("minutes");
   try {
     return await getPosts(skip, take, userid, sort, statusfilter);
   } catch (error) {

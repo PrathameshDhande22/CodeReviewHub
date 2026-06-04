@@ -1,11 +1,14 @@
-import { Tag } from "@generated/prisma/client";
 import {
+  createTag as createNewTag,
   getAllTags,
   getTagByName,
-  createTag as createNewTag,
 } from "@/db/tag.repo";
+import { Tag } from "@generated/prisma/client";
+import { cacheLife } from "next/cache";
 
 export async function getTags(): Promise<Tag[]> {
+  "use cache";
+  cacheLife("hours");
   return getAllTags();
 }
 

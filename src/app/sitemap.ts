@@ -1,9 +1,12 @@
 import { getPosts } from "@/db/postcode.repo";
+import { cacheLife } from "next/cache";
 import { MetadataRoute } from "next";
 
 const BASE_URL = "https://codereviewhub.prathameshd.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    "use cache";
+    cacheLife("hours");
     const posts = await getPosts(0, Number.MAX_SAFE_INTEGER);
 
     const postSiteMaps: MetadataRoute.Sitemap = posts.map((post) => ({

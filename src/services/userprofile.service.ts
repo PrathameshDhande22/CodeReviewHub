@@ -4,6 +4,7 @@ import { deleteFile, getPublicUrl, uploadFile } from "@/services/blobstorage";
 import { UserDashboard } from "@/types/profile";
 import { User } from "@generated/prisma/client";
 import status from "http-status";
+import { cacheLife } from "next/cache";
 
 export class UserProfileServiceError extends Error {
   constructor(
@@ -118,6 +119,8 @@ export async function updateProfileService(
 
 
 export async function getUserDashboardData(userId: string): Promise<UserDashboard> {
+  "use cache";
+  cacheLife("minutes");
   // User Reputation
   const allReputations = await getReputations();
   const userReputation = await getUserReputation(userId)

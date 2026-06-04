@@ -2,8 +2,9 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLegalPageBySlug, getLegalSlugs } from "@/lib/content";
 import { BASE_URL, SITE_NAME_SHORT, TWITTER_HANDLE } from "@/lib/seo";
+import { cacheLife } from "next/cache";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return getLegalSlugs();
 }
 
@@ -11,6 +12,8 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps<"/legal/[slug]">): Promise<Metadata> {
+  "use cache";
+  cacheLife("days");
   const { slug } = await params;
   const page = await getLegalPageBySlug(slug);
 
@@ -54,6 +57,8 @@ export async function generateMetadata({
 export default async function LegalPage({
   params,
 }: PageProps<"/legal/[slug]">) {
+  "use cache";
+  cacheLife("days");
   const { slug } = await params;
   const page = await getLegalPageBySlug(slug);
 

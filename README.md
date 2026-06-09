@@ -24,20 +24,20 @@
 
 ### Key Features
 
-| Feature | Description |
-|---|---|
-| 📝 **Post Code** | Share code snippets directly or upload a file. Tag with languages and topics. |
-| 💬 **Inline Comments** | GitHub-style line-by-line commenting with drag-to-select line ranges. |
-| ⭐ **Peer Reviews** | Full review system with markdown support — post, edit, delete, and accept reviews. |
-| 🏆 **Reputation System** | Earn points when your reviews are accepted. Rise through architect levels. |
-| 🔍 **Browse & Filter** | Infinite scroll post feed filterable by language, status (Open / Accepted / Closed), and sort order. |
-| 🎨 **Syntax Highlighting** | Beautiful code highlighting powered by Shiki with the Houston theme. |
-| 🖊️ **Monaco Editor** | VS Code's editor embedded for writing and editing code posts. |
-| 🔐 **Authentication** | Email/password auth with Google OAuth, password reset via email, and JWT sessions via NextAuth. |
-| 🖼️ **Profile** | User dashboard with reputation score, level rank, review history, and comment history. |
-| 🗃️ **File Storage** | Large code files and profile images stored in MinIO (S3-compatible object storage). |
-| 📄 **Legal Pages** | Markdown-driven Terms & Privacy pages with SEO metadata. |
-| 🗺️ **SEO** | Auto-generated sitemap, robots.txt, Open Graph images, and Twitter cards per post. |
+| Feature                    | Description                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 📝 **Post Code**           | Share code snippets directly or upload a file. Tag with languages and topics.                        |
+| 💬 **Inline Comments**     | GitHub-style line-by-line commenting with drag-to-select line ranges.                                |
+| ⭐ **Peer Reviews**        | Full review system with markdown support — post, edit, delete, and accept reviews.                   |
+| 🏆 **Reputation System**   | Earn points when your reviews are accepted. Rise through architect levels.                           |
+| 🔍 **Browse & Filter**     | Infinite scroll post feed filterable by language, status (Open / Accepted / Closed), and sort order. |
+| 🎨 **Syntax Highlighting** | Beautiful code highlighting powered by Shiki with the Houston theme.                                 |
+| 🖊️ **Monaco Editor**       | VS Code's editor embedded for writing and editing code posts.                                        |
+| 🔐 **Authentication**      | Email/password auth with Google OAuth, password reset via email, and JWT sessions via NextAuth.      |
+| 🖼️ **Profile**             | User dashboard with reputation score, level rank, review history, and comment history.               |
+| 🗃️ **File Storage**        | Large code files and profile images stored in MinIO (S3-compatible object storage).                  |
+| 📄 **Legal Pages**         | Markdown-driven Terms & Privacy pages with SEO metadata.                                             |
+| 🗺️ **SEO**                 | Auto-generated sitemap, robots.txt, Open Graph images, and Twitter cards per post.                   |
 
 ---
 
@@ -123,31 +123,17 @@ The app will be available at **[http://localhost:3000](http://localhost:3000)**.
 
 ---
 
-## Available Scripts
-
-| Command | Description |
-|---|---|
-| `yarn dev` | Start the Next.js development server on `localhost:3000` |
-| `yarn build` | Create an optimized production build |
-| `yarn start` | Start the production server (requires `yarn build` first) |
-| `yarn lint` | Run ESLint to check code quality |
-| `yarn db:generate` | Generate the Prisma client from the schema |
-| `yarn db:migrate` | Run Prisma migrations in development mode |
-| `yarn podman` | Start Podman machine and bring up all Docker services |
-
----
-
 ## 🐳 Running with Docker Compose
 
 The `start-dockercompose.yaml` file spins up all the required backend infrastructure services.
 
 ### Services Included
 
-| Service | Container Name | Port | Description |
-|---|---|---|---|
-| **PostgreSQL 18** | `postgressql` | `5432` | Primary application database |
-| **pgAdmin 4** | `pgadmin` | `8081` | Web-based PostgreSQL GUI |
-| **MinIO** | `minio-blobstorage` | `9000` / `9001` | S3-compatible object storage for code files & images |
+| Service           | Container Name      | Port            | Description                                          |
+| ----------------- | ------------------- | --------------- | ---------------------------------------------------- |
+| **PostgreSQL 18** | `postgressql`       | `5432`          | Primary application database                         |
+| **pgAdmin 4**     | `pgadmin`           | `8081`          | Web-based PostgreSQL GUI                             |
+| **MinIO**         | `minio-blobstorage` | `9000` / `9001` | S3-compatible object storage for code files & images |
 
 ### Start with Docker
 
@@ -177,11 +163,11 @@ docker compose -f start-dockercompose.yaml down -v
 
 ### Accessing the Services
 
-| Service | URL | Credentials |
-|---|---|---|
-| **pgAdmin** | [http://localhost:8081](http://localhost:8081) | Email: `test@prathamesh.com` / Password: `test` |
-| **MinIO Console** | [http://localhost:9001](http://localhost:9001) | Configure via MinIO license & access keys |
-| **PostgreSQL** | `localhost:5432` | User: `postgres` / Password: `admin1234` |
+| Service           | URL                                            | Credentials                                     |
+| ----------------- | ---------------------------------------------- | ----------------------------------------------- |
+| **pgAdmin**       | [http://localhost:8081](http://localhost:8081) | Email: `test@prathamesh.com` / Password: `test` |
+| **MinIO Console** | [http://localhost:9001](http://localhost:9001) | Configure via MinIO license & access keys       |
+| **PostgreSQL**    | `localhost:5432`                               | User: `postgres` / Password: `admin1234`        |
 
 > **MinIO Note:** MinIO uses a license file located at `./minio/minio.license`. You need a valid MinIO AIStor license for the configured image. For development without a license, you can swap the image to `minio/minio:latest` and update the command to `minio server /mnt/data --console-address ":9001"`.
 
@@ -201,7 +187,36 @@ yarn build
 yarn start
 ```
 
-The production server runs on port `3000` by default. The build will show a route table with caching information — routes marked `○` are statically generated, `◐` are partially prerendered, and `ƒ` are fully dynamic.
+---
+
+## Screenshots
+
+1. **Home Page**
+   ![Home Page](./images/s1.png)
+
+2. **Login Page**
+   ![Login page](./images/s2.png)
+
+3. **Register Page**
+   ![Register Page](./images/s3.png)
+
+4. **Browse Post Page**
+   ![Browse Post Page](./images/s4.png)
+
+5. **View Post Page**
+   ![view Post Page](./images/s5.png)
+
+6. **Review on Post Page**
+   ![Review on Post page](./images/s6.png)
+
+7. **Profile Page**
+   ![Profile Page](./images/s7.png)
+
+8. **Update Profile**
+   ![Update Profile](./images/s8.png)
+
+9. **New Post Page**
+   ![New Post Page](./images/s9.png)
 
 ---
 

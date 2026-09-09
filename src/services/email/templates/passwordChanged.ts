@@ -48,7 +48,7 @@ ${detailRow("Method", methodLabel)}
 ${detailRow("When", timestamp)}`,
 )}
 ${paragraph(
-  `If this was you, nothing else to do &mdash; sign in with your new password and get back to reviewing.`,
+  `If this was you, nothing else to do. Sign in with your new password and get back to reviewing.`,
 )}
 ${button("Go to CodeReview Hub", canonicalUrl("/login"))}
 ${noticeBox(
@@ -71,7 +71,7 @@ Account: ${email}
 Method:  ${methodLabel}
 When:    ${timestamp}
 
-If this was you, nothing else to do - sign in with your new password: ${canonicalUrl("/login")}
+If this was you, nothing else to do. Sign in with your new password: ${canonicalUrl("/login")}
 
 Wasn't you? Reset your password right away: ${canonicalUrl("/forgot-password")}
 ${textFooter()}`;

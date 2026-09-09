@@ -167,7 +167,7 @@ ${content}
                     : ""
                 }
                 <p style="margin:0;font-family:${fonts.body};font-size:12px;line-height:20px;color:#475569;">
-                  &copy; ${new Date().getUTCFullYear()} ${SITE_NAME_SHORT}. Sent from ${BASE_URL.replace(/^https?:\/\//, "")} &mdash; this mailbox is not monitored.
+                  &copy; ${new Date().getUTCFullYear()} ${SITE_NAME_SHORT}. Sent from ${BASE_URL.replace(/^https?:\/\//, "")}. This mailbox is not monitored.
                 </p>
               </td>
             </tr>

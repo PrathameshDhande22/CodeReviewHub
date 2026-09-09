@@ -63,7 +63,7 @@ export const welcomeTemplate = ({
   const content = `${heading("Welcome to CodeReview Hub")}
 ${paragraph(`Hey ${escapeHtml(displayName)},`)}
 ${paragraph(
-  `Your account is ready. CodeReview Hub is where developers post code, get structured line-by-line feedback, and grow a reputation for writing clean code &mdash; think GitHub pull requests crossed with Stack Overflow.`,
+  `Your account is ready. CodeReview Hub is where developers post code, get structured line-by-line feedback, and grow a reputation for writing clean code. Think GitHub pull requests crossed with Stack Overflow.`,
 )}
 ${
   username
@@ -79,7 +79,7 @@ ${stepList()}
         </table>
 ${button("Browse open posts", canonicalUrl("/browse"))}
 ${paragraph(
-  `Start with your first review &mdash; the fastest way onto the leaderboard is helping someone else ship better code.`,
+  `Start with your first review. The fastest way onto the leaderboard is helping someone else ship better code.`,
   { muted: true, size: 13 },
 )}`;
 
@@ -101,7 +101,7 @@ ${textFooter()}`;
     subject: "Welcome to CodeReview Hub 👋",
     html: renderEmailLayout({
       preheader:
-        "Your account is ready - post code, review snippets, and build your reputation.",
+        "Your account is ready. Post code, review snippets, and build your reputation.",
       content,
       footerNote:
         "You received this email because an account was created with this address.",

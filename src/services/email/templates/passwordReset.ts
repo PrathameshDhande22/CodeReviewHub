@@ -40,7 +40,7 @@ ${codePanel(escapeHtml(otp), `Expires in ${expiresInMinutes} minutes`)}
 ${paragraph("Enter it on the reset page, or jump straight there:")}
 ${button("Reset my password", resetUrl)}
 ${noticeBox(
-  `Didn't ask for this? You can safely ignore this email &mdash; your password stays as it is until the code above is used. If you keep getting these, change your password from ${strong("Profile &rarr; Change Password")}.`,
+  `Didn't ask for this? You can safely ignore this email. Your password stays as it is until the code above is used. If you keep getting these, change your password from ${strong("Profile &rarr; Change Password")}.`,
 )}
 ${divider()}
 ${paragraph(
@@ -59,7 +59,7 @@ It expires in ${expiresInMinutes} minutes.
 
 Finish here: ${resetUrl}
 
-Didn't ask for this? You can safely ignore this email - your password stays as it is until the code above is used.
+Didn't ask for this? You can safely ignore this email. Your password stays as it is until the code above is used.
 
 Never share this code. CodeReview Hub will never ask you for it.
 ${textFooter()}`;

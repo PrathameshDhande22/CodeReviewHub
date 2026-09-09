@@ -1,0 +1,9 @@
+*.md
+.git/
+.env
+.env.example
+.vscode/*
+images/*
+.gitignore
+LICENSE
+start-dockercompose.yaml

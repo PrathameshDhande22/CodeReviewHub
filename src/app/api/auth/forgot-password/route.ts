@@ -13,10 +13,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email } = forgotPasswordSchema.parse(body);
 
-    const otp = await requestPasswordReset(email);
+    await requestPasswordReset(email);
 
-    return NextResponse.json<APIResponse<{ otp: string }>>(
-      { status: "success", message: "Reset code generated", data: { otp } },
+    return NextResponse.json<APIResponse>(
+      {
+        status: "success",
+        message: "Reset code sent to your email",
+      },
       { status: status.OK },
     );
   } catch (error) {

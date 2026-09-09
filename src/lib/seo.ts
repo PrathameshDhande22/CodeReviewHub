@@ -1,4 +1,4 @@
-export const BASE_URL = "https://codereviewhub.prathameshd.com";
+export const BASE_URL = "https://codereviewhub.prathameshdhande.com";
 export const SITE_NAME = "CodeReview Hub - The Digital Architect";
 export const SITE_NAME_SHORT = "CodeReview Hub";
 export const TWITTER_HANDLE = "@CodeReviewHub";

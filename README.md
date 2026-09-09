@@ -34,6 +34,7 @@
 | 🎨 **Syntax Highlighting** | Beautiful code highlighting powered by Shiki with the Houston theme.                                 |
 | 🖊️ **Monaco Editor**       | VS Code's editor embedded for writing and editing code posts.                                        |
 | 🔐 **Authentication**      | Email/password auth with Google OAuth, password reset via email, and JWT sessions via NextAuth.      |
+| 📧 **Transactional Email** | Nodemailer over SMTP — reset codes, password-change alerts, and welcome mail in on-brand templates. |
 | 🖼️ **Profile**             | User dashboard with reputation score, level rank, review history, and comment history.               |
 | 🗃️ **File Storage**        | Large code files and profile images stored in MinIO (S3-compatible object storage).                  |
 | 📄 **Legal Pages**         | Markdown-driven Terms & Privacy pages with SEO metadata.                                             |
@@ -93,7 +94,25 @@ MINIO_SECRET_KEY=your_minio_secret_key
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
 MINIO_USE_SSL=false
+
+# SMTP — transactional email (reset codes, security alerts, welcome mail)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false          # true for port 465 (implicit TLS), false for STARTTLS
+SMTP_USER=your_smtp_username
+SMTP_PASSWORD=your_smtp_app_password
+
+EMAIL_FROM_NAME="CodeReview Hub"
+EMAIL_FROM_ADDRESS=no-reply@codereviewhub.prathameshd.com
+EMAIL_REPLY_TO=            # optional — leave empty for a no-reply mailbox
 ```
+
+> **Email in development:** any SMTP provider works — a Gmail
+> [app password](https://support.google.com/accounts/answer/185833), Mailtrap,
+> Resend, Brevo, or [Ethereal](https://ethereal.email) for throwaway inboxes.
+> The forgot-password flow **requires** working SMTP: if the mail cannot be sent
+> the reset code is discarded and the request fails, so no dead code is left in
+> the database.
 
 ### 4. Start Backend Services (Docker Compose)
 

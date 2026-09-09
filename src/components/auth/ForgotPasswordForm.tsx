@@ -2,13 +2,18 @@
 
 import FormField from "@/components/auth/FormField";
 import { forgotPasswordApi } from "@/api/auth";
-import { forgotPasswordSchema, type ForgotPasswordInputs } from "@/schemas/password";
+import {
+  forgotPasswordSchema,
+  OTP_EXPIRY_MINUTES,
+  type ForgotPasswordInputs,
+} from "@/schemas/password";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaArrowRight } from "react-icons/fa";
+import { MdOutlineMarkEmailRead } from "react-icons/md";
 import { toast } from "react-toastify";
 
 //#region Font Declaration
@@ -19,16 +24,10 @@ const space_grotesk = Space_Grotesk({
 const inter = Inter({
   subsets: ["latin"],
 });
-
-const jetbrains_mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: "400",
-});
 //#endregion
 
 const ForgotPasswordForm = () => {
-  const [otp, setOtp] = useState<string | null>(null);
-  const [submittedEmail, setSubmittedEmail] = useState<string>("");
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   //#region React Hook Form
   const {
@@ -48,47 +47,50 @@ const ForgotPasswordForm = () => {
         toast.error(result.message || "Failed to process password reset");
         return;
       }
-      setSubmittedEmail(data.email);
-      setOtp(result.data?.otp ?? null);
+      setSentTo(data.email);
     } catch {
       toast.error("Something went wrong");
     }
   };
   //#endregion
 
-  if (otp) {
+  if (sentTo) {
     return (
       <div className={`${inter.className} space-y-5`}>
-        <div className="text-center space-y-1">
-          <p className="text-gray-400 text-sm">Reset code generated for</p>
-          <p className="text-white font-medium">{submittedEmail}</p>
-        </div>
-
         <div className="bg-[#1c2436] rounded-xl p-6 text-center border border-primary/20">
-          <p className="text-gray-400 text-xs tracking-widest mb-3">
-            YOUR RESET CODE
+          <MdOutlineMarkEmailRead
+            size={40}
+            className="text-primary mx-auto mb-3"
+          />
+          <p className="text-gray-400 text-sm">We sent a 6-digit reset code to</p>
+          <p className="text-white font-medium break-all mt-1">{sentTo}</p>
+          <p className="text-gray-500 text-xs mt-3">
+            The code expires in {OTP_EXPIRY_MINUTES} minutes
           </p>
-          <p
-            className={`${jetbrains_mono.className} text-4xl font-bold text-primary tracking-[0.4em]`}
-          >
-            {otp}
-          </p>
-          <p className="text-gray-500 text-xs mt-3">Expires in 5 minutes</p>
         </div>
 
         <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
           <p className="text-yellow-400 text-xs text-center">
-            Copy this code before navigating away
+            Not in your inbox? Check the spam folder before requesting a new
+            code.
           </p>
         </div>
 
         <Link
-          href={`/reset-password?email=${encodeURIComponent(submittedEmail)}`}
+          href={`/reset-password?email=${encodeURIComponent(sentTo)}`}
           className={`${space_grotesk.className} text-black w-full py-4 rounded-xs bg-linear-to-r from-primary to-primary-dark flex items-center justify-center space-x-3 font-bold`}
         >
           <span>Continue to Reset Password</span>
           <FaArrowRight size={15} />
         </Link>
+
+        <button
+          type="button"
+          onClick={() => setSentTo(null)}
+          className="w-full text-gray-400 text-sm hover:text-primary"
+        >
+          Use a different email
+        </button>
       </div>
     );
   }
@@ -122,7 +124,7 @@ const ForgotPasswordForm = () => {
         disabled={isSubmitting}
         className={`${space_grotesk.className} text-black w-full py-4 rounded-xs bg-linear-to-r from-primary to-primary-dark space-x-3 font-bold disabled:opacity-50`}
       >
-        <span>{isSubmitting ? "Generating code..." : "Get Reset Code"}</span>
+        <span>{isSubmitting ? "Sending code..." : "Send Reset Code"}</span>
         <FaArrowRight className="inline-block" size={15} />
       </button>
     </form>

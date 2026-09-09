@@ -4,11 +4,14 @@ import {
   getTagByName,
 } from "@/db/tag.repo";
 import { Tag } from "@generated/prisma/client";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+
+export const tagsCacheTag = () => "tags";
 
 export async function getTags(): Promise<Tag[]> {
   "use cache";
   cacheLife("hours");
+  cacheTag(tagsCacheTag());
   return getAllTags();
 }
 
@@ -20,7 +23,9 @@ export async function createTag(name: string): Promise<Tag> {
       return tag;
     }
     // Create New Tag
-    return await createNewTag(name);
+    const createdTag = await createNewTag(name);
+    revalidateTag(tagsCacheTag(), "max");
+    return createdTag;
   } catch (error) {
     console.error(error);
     throw error;

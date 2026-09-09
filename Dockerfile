@@ -27,6 +27,26 @@ RUN rm -rf .next/standalone/node_modules/@img/sharp-libvips-linux-x64 \
 FROM node:26-alpine AS runner
 WORKDIR /app
 
+ARG BUILD_DATE
+ARG GIT_SHA
+ARG VERSION
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+    org.opencontainers.image.authors="Prathamesh Dhande" \
+    org.opencontainers.image.source="https://github.com/PrathameshDhande22/CodeReviewHub" \
+    org.opencontainers.image.version="${VERSION}" \
+    org.opencontainers.image.url="https://github.com/PrathameshDhande22/CodeReviewHub" \
+    org.opencontainers.image.revision="${GIT_SHA}" \
+    org.opencontainers.image.vendor="PrathameshDhande22" \
+    org.opencontainers.image.title="CodeReview Hub" \
+    org.opencontainers.image.description="Collaborative code review platform where developers post code and receive line-by-line peer reviews." \
+    com.prathameshdhande.title="CodeReview Hub" \
+    com.prathameshdhande.description="Platform to post code snippets and receive peer reviews." \
+    com.prathameshdhande.project="CodeReview Hub" \
+    com.prathameshdhande.repository="https://github.com/PrathameshDhande22/CodeReviewHub" \
+    com.prathameshdhande.service="CodeReview Hub" \
+    com.prathameshdhande.version="${VERSION}"
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000

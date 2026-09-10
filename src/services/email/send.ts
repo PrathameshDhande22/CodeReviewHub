@@ -41,7 +41,7 @@ export const sendMail = async ({
 export const sendMailQuietly = async (args: SendMailArgs): Promise<void> => {
   try {
     await sendMail(args);
-  } catch {}
+  } catch { }
 };
 
 //#region Transactional Emails

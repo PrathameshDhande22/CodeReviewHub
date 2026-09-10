@@ -98,8 +98,7 @@ jobs:
             script: |
                 set -o pipefail
                 BASE_DIR="/home/prathamesh/Production-Configuration"
-                echo $BASE_DIR
                 cd $BASE_DIR
-                $BASE_DIR/scripts/deploy_application.sh $BASE_DIR/applications/CodeReviewHub CodeReviewHub ${{secrets.ECR_REGISTRY}} >> /var/log/Production-Configuration/deploy-application.log 2>&1 | tee -a /var/log/Production-Configuration/deploy-application.log
+                $BASE_DIR/scripts/deploy_application.sh $BASE_DIR/applications/CodeReviewHub CodeReviewHub ${{secrets.ECR_REGISTRY}}
         
     

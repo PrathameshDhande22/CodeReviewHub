@@ -45,8 +45,6 @@ services:
       - traefik.http.routers.codereviewhub.entrypoints=https
       - traefik.http.routers.codereviewhub.tls=true
       - traefik.http.routers.codereviewhub.tls.certresolver=spaceship
-      - traefik.http.routers.codereviewhub.service=codereviewhub-service
-      - traefik.http.services.codereviewhub-service.loadbalancer.server.port=3000
 networks:
   proxy:
     external: true

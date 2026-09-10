@@ -3,10 +3,11 @@ import { getReviewsForUser, ReviewServiceError } from "@/services/review.service
 import { APIResponse } from "@/types";
 import { PaginatedReviewsResponse, SortReview } from "@/types/review";
 import status from "http-status";
-import { NextRequest, NextResponse } from "next/server";
+import { connection, NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     try {
+        await connection();
         const params = request.nextUrl.searchParams;
 
         const user = await getOptionalServerSession()

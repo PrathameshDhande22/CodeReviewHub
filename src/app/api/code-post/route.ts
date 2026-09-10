@@ -8,7 +8,7 @@ import { APIResponse } from "@/types";
 import { CodeStatus, Sort } from "@/types/browse";
 import { PostListItem } from "@/types/postCode";
 import status from "http-status";
-import { NextRequest, NextResponse } from "next/server";
+import { connection, NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    await connection();
     // Get the User
     const user = await getOptionalServerSession();
 

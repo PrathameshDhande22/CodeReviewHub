@@ -3,11 +3,12 @@ import { getCommentsForUserService, PostCommentServiceError } from "@/services/c
 import { APIResponse } from "@/types";
 import { PaginatedCommentsResponse } from "@/types/comment";
 import status from "http-status";
-import { NextRequest, NextResponse } from "next/server";
+import { connection, NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(request: NextRequest) {
     try {
+        await connection();
         const user = await getOptionalServerSession();
 
         if (!user) {

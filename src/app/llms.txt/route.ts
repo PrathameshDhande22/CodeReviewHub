@@ -3,10 +3,11 @@ import { llmsContent } from "@/llms-content";
 import { getPost } from "@/services/postCode.service";
 import { APIResponse } from "@/types";
 import status from "http-status";
-import { NextRequest, NextResponse } from "next/server";
+import { connection, NextRequest, NextResponse } from "next/server";
 
 export async function GET(_request: NextRequest) {
     try {
+        await connection();
         const posts = await getPost(0, Number.MAX_SAFE_INTEGER);
 
         let mdfile = llmsContent;

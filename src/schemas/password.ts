@@ -1,5 +1,7 @@
 import z from "zod";
 
+export const OTP_EXPIRY_MINUTES = 5;
+
 const passwordValidation = z
   .string()
   .min(6, "Password must be at least 6 characters long")

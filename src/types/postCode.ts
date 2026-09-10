@@ -2,7 +2,7 @@ import { CodeStatus, Prisma } from "@generated/prisma/client";
 
 export interface PostCodeRequest {
   title: string;
-  description: string;
+  description: string | null;
   code: string | null;
   language: string;
   authorId: string;

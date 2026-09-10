@@ -2,10 +2,11 @@ import { acceptReviewById, addReview, deleteReviewById, getReviewById, getReview
 import { ReviewInput } from "@/schemas/review";
 import { PaginatedReviewsResponse, ReviewItem, SortReview } from "@/types/review";
 import status from "http-status";
-import { cacheLife } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { Session } from "next-auth";
 import { getPostByIdService } from "./postCode.service";
 import { getPostById } from "@/db/postcode.repo";
+import { dashboardCacheTag } from "./userprofile.service";
 import { incrementUserReputationScore } from "@/db/reputation.repo";
 
 export class ReviewServiceError extends Error {
@@ -103,8 +104,6 @@ export async function getReviewsForPost(
     pageSize: number,
     sort: SortReview = "newest"
 ): Promise<PaginatedReviewsResponse> {
-    "use cache";
-    cacheLife("minutes");
     try {
         const post = await getPostById(postId)
 
@@ -224,6 +223,7 @@ export async function acceptReviewForPost(reviewId: string, user: Session) {
 
         // Increase the score of the reviewer by 10 points
         await incrementUserReputationScore(review.reviewerId, 10)
+        revalidateTag(dashboardCacheTag(review.reviewerId), "max")
 
         return acceptedReview
     } catch (error) {

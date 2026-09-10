@@ -16,7 +16,7 @@ export async function registerApi(data: RegisterInputs): Promise<RegisterRespons
 
 export async function forgotPasswordApi(
   data: ForgotPasswordInputs,
-): Promise<APIResponse<{ otp: string }>> {
+): Promise<APIResponse> {
   const response = await fetch("/api/auth/forgot-password", {
     method: "POST",
     body: JSON.stringify(data),

@@ -5,6 +5,12 @@ import {
   deleteVerificationTokensByIdentifier,
   findVerificationToken,
 } from "@/db/verificationToken.repo";
+import { OTP_EXPIRY_MINUTES } from "@/schemas/password";
+import {
+  EmailServiceError,
+  sendPasswordChangedEmail,
+  sendPasswordResetEmail,
+} from "@/services/email";
 import { compare, hash } from "bcryptjs";
 import { randomInt } from "crypto";
 import status from "http-status";
@@ -19,7 +25,7 @@ export class PasswordServiceError extends Error {
   }
 }
 
-export async function requestPasswordReset(email: string): Promise<string> {
+export async function requestPasswordReset(email: string): Promise<void> {
   try {
     const user = await getUserByEmail(email);
 
@@ -43,10 +49,24 @@ export async function requestPasswordReset(email: string): Promise<string> {
     await createVerificationToken(
       email,
       otp,
-      new Date(Date.now() + 5 * 60 * 1000),
+      new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000),
     );
 
-    return otp;
+    try {
+      await sendPasswordResetEmail(email, {
+        name: user.name ?? user.username,
+        email,
+        otp,
+        expiresInMinutes: OTP_EXPIRY_MINUTES,
+      });
+    } catch (error) {
+      await deleteVerificationTokensByIdentifier(email);
+
+      if (error instanceof EmailServiceError) {
+        throw new PasswordServiceError(error.message, error.statusCode);
+      }
+      throw error;
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -88,6 +108,13 @@ export async function resetPassword(
     const passwordHash = await hash(newPassword, 12);
     await updateUserPassword(user.id, passwordHash);
     await deleteVerificationToken(email, otp);
+
+    await sendPasswordChangedEmail(email, {
+      name: user.name ?? user.username,
+      email,
+      method: "reset",
+      changedAt: new Date(),
+    });
   } catch (error) {
     console.error(error);
     throw error;
@@ -123,6 +150,13 @@ export async function changePassword(
 
     const passwordHash = await hash(newPassword, 12);
     await updateUserPassword(userId, passwordHash);
+
+    await sendPasswordChangedEmail(user.email, {
+      name: user.name ?? user.username,
+      email: user.email,
+      method: "change",
+      changedAt: new Date(),
+    });
   } catch (error) {
     console.error(error);
     throw error;

@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import Providers from "@/providers/provider";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { canonicalUrl } from "@/lib/seo";
+import { BASE_URL, canonicalUrl } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,6 +18,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "CodeReview Hub - The Digital Architect",
     template: "%s | CodeReview Hub",

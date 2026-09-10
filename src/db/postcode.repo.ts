@@ -13,7 +13,7 @@ export async function createPostReview(post: PostCodeRequest): Promise<string> {
         code: post.code,
         language: String(post.language),
         authorId: post.authorId,
-        blobName: String(post.blobName),
+        blobName: post.blobName ?? null,
         published: post.published,
         requireComments: post.requireComments,
         requireReview: post.requireReview,

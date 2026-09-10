@@ -4,7 +4,9 @@ import { deleteFile, getPublicUrl, uploadFile } from "@/services/blobstorage";
 import { UserDashboard } from "@/types/profile";
 import { User } from "@generated/prisma/client";
 import status from "http-status";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+
+export const dashboardCacheTag = (userId: string) => `dashboard-${userId}`;
 
 export class UserProfileServiceError extends Error {
   constructor(
@@ -110,7 +112,9 @@ export async function updateProfileService(
       updateData.image = getPublicUrl("profile-images", objectName);
     }
 
-    return await updateUserProfile(userId, updateData);
+    const updatedUser = await updateUserProfile(userId, updateData);
+    revalidateTag(dashboardCacheTag(userId), "max");
+    return updatedUser;
   } catch (error) {
     console.error(error);
     throw error;
@@ -121,6 +125,7 @@ export async function updateProfileService(
 export async function getUserDashboardData(userId: string): Promise<UserDashboard> {
   "use cache";
   cacheLife("minutes");
+  cacheTag(dashboardCacheTag(userId));
   // User Reputation
   const allReputations = await getReputations();
   const userReputation = await getUserReputation(userId)

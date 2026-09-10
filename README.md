@@ -20,7 +20,7 @@
 
 ## What is CodeReview Hub?
 
-**CodeReview Hub** is a full-stack web application that lets developers post their code snippets and receive structured, expert peer reviews — think of it as GitHub Pull Requests combined with Stack Overflow, but focused entirely on collaborative code quality improvement.
+**CodeReview Hub** is a full-stack web application that lets developers post their code snippets and receive structured, expert peer reviews. Think of it as GitHub Pull Requests combined with Stack Overflow, but focused entirely on collaborative code quality improvement.
 
 ### Key Features
 
@@ -28,12 +28,13 @@
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 📝 **Post Code**           | Share code snippets directly or upload a file. Tag with languages and topics.                        |
 | 💬 **Inline Comments**     | GitHub-style line-by-line commenting with drag-to-select line ranges.                                |
-| ⭐ **Peer Reviews**        | Full review system with markdown support — post, edit, delete, and accept reviews.                   |
+| ⭐ **Peer Reviews**        | Full review system with markdown support: post, edit, delete, and accept reviews.                   |
 | 🏆 **Reputation System**   | Earn points when your reviews are accepted. Rise through architect levels.                           |
 | 🔍 **Browse & Filter**     | Infinite scroll post feed filterable by language, status (Open / Accepted / Closed), and sort order. |
 | 🎨 **Syntax Highlighting** | Beautiful code highlighting powered by Shiki with the Houston theme.                                 |
 | 🖊️ **Monaco Editor**       | VS Code's editor embedded for writing and editing code posts.                                        |
 | 🔐 **Authentication**      | Email/password auth with Google OAuth, password reset via email, and JWT sessions via NextAuth.      |
+| 📧 **Transactional Email** | Nodemailer over SMTP for reset codes, password-change alerts and welcome mail, in on-brand templates. |
 | 🖼️ **Profile**             | User dashboard with reputation score, level rank, review history, and comment history.               |
 | 🗃️ **File Storage**        | Large code files and profile images stored in MinIO (S3-compatible object storage).                  |
 | 📄 **Legal Pages**         | Markdown-driven Terms & Privacy pages with SEO metadata.                                             |
@@ -45,9 +46,10 @@
 
 Make sure you have the following installed before getting started:
 
-- [Node.js](https://nodejs.org/) `v20+`
+- [Node.js](https://nodejs.org/) `v20.9+` (the container image ships Node 26)
 - [Yarn](https://yarnpkg.com/) (package manager)
 - [Docker](https://www.docker.com/) **or** [Podman](https://podman.io/) (for running services)
+- An SMTP account for transactional email (see [Configure Environment Variables](#3-configure-environment-variables))
 
 ---
 
@@ -57,7 +59,7 @@ Make sure you have the following installed before getting started:
 
 ```bash
 git clone https://github.com/PrathameshDhande22/CodeReviewHub.git
-cd CodeReviewHub/my-app
+cd CodeReviewHub
 ```
 
 ### 2. Install Dependencies
@@ -77,11 +79,18 @@ cp .env.example .env
 Open `.env` and update the following:
 
 ```env
-# PostgreSQL — matches the docker-compose defaults
+# PostgreSQL. Matches the docker-compose defaults.
 DATABASE_URL="postgresql://postgres:admin1234@localhost:5432/codereview?schema=public"
 
-# NextAuth secret — generate with: openssl rand -base64 32
+# NextAuth secret. Generate with: openssl rand -base64 32
 BETTER_AUTH_SECRET=your_random_secret_here
+
+# Public origin of this deployment. Used for canonical URLs, robots.txt,
+# the sitemap and links inside emails.
+BASE_URL=http://localhost:3000
+
+# Origin NextAuth builds its callback URLs from. Must match the browser origin.
+NEXTAUTH_URL=http://localhost:3000
 
 # Google OAuth (from Google Cloud Console)
 AUTH_GOOGLE_ID=your_google_client_id
@@ -93,7 +102,19 @@ MINIO_SECRET_KEY=your_minio_secret_key
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
 MINIO_USE_SSL=false
+
+# SMTP
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false          # true for port 465 (implicit TLS), false for STARTTLS
+SMTP_USER=your_smtp_username
+SMTP_PASSWORD=your_smtp_app_password
+
+EMAIL_FROM_NAME="CodeReview Hub"
+EMAIL_FROM_ADDRESS=no-reply@codereviewhub.prathameshdhande.com
+EMAIL_REPLY_TO=            # optional, leave empty for a no-reply mailbox
 ```
+
 
 ### 4. Start Backend Services (Docker Compose)
 
@@ -103,15 +124,21 @@ The project uses Docker Compose to run **PostgreSQL**, **pgAdmin**, and **MinIO*
 
 ### 5. Set Up the Database
 
-Generate the Prisma client and run migrations:
-
 ```bash
 # Generate Prisma client types
 yarn db:generate
 
 # Apply database migrations
 yarn db:migrate
+
+# Load languages and reputation levels
+yarn db:seed
 ```
+
+> **The seed step is not optional.** It populates the `Languages` and
+> `Reputation` tables. Without it, registration fails (every new user is
+> assigned the level-0 reputation row) and no language can be selected when
+> creating a post.
 
 ### 6. Run the Development Server
 
@@ -120,6 +147,21 @@ yarn dev
 ```
 
 The app will be available at **[http://localhost:3000](http://localhost:3000)**.
+
+---
+
+## Available Scripts
+
+| Script             | Description                                                     |
+| ------------------ | --------------------------------------------------------------- |
+| `yarn dev`         | Start the development server on `localhost:3000`.               |
+| `yarn build`       | Produce the production (standalone) build.                      |
+| `yarn start`       | Serve the production build.                                     |
+| `yarn lint`        | Run ESLint.                                                     |
+| `yarn db:generate` | Generate the Prisma client into `generated/prisma`.             |
+| `yarn db:migrate`  | Create and apply a development migration.                       |
+| `yarn db:seed`     | Seed languages and reputation levels.                           |
+| `yarn podman`      | Start the Podman machine and bring up the compose services.     |
 
 ---
 
@@ -144,10 +186,6 @@ docker compose -f start-dockercompose.yaml up -d
 ### Start with Podman
 
 ```bash
-# Option 1 — Using the built-in npm script
-yarn podman
-
-# Option 2 — Manual
 podman machine start
 podman compose -f start-dockercompose.yaml up -d
 ```
@@ -157,7 +195,6 @@ podman compose -f start-dockercompose.yaml up -d
 ```bash
 docker compose -f start-dockercompose.yaml down
 
-# To also remove volumes (⚠️ deletes all data):
 docker compose -f start-dockercompose.yaml down -v
 ```
 
@@ -186,7 +223,6 @@ yarn build
 ```bash
 yarn start
 ```
-
 ---
 
 ## Screenshots

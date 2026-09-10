@@ -2,6 +2,7 @@ import { hash } from "bcryptjs";
 import { createUser, getUserByEmail, getUserByUsername } from "@/db/user.repo";
 import { RegisterInputs } from "@/schemas/register";
 import { addUserReputation } from "@/db/reputation.repo";
+import { sendWelcomeEmail } from "@/services/email";
 
 export class RegisterServiceError extends Error {
   constructor(
@@ -36,4 +37,10 @@ export async function registerUser(data: RegisterInputs): Promise<void> {
   });
 
   await addUserReputation(useradded.id);
+
+  await sendWelcomeEmail(data.email, {
+    name: data.fullname,
+    username: data.username,
+    email: data.email,
+  });
 }

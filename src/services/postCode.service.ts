@@ -11,11 +11,12 @@ import {
 import { createTags } from "@/db/tag.repo";
 import { deleteFile, getFileContent, uploadFile } from "@/services/blobstorage";
 import { getLanguages } from "@/services/language.service";
+import { tagsCacheTag } from "@/services/tag.service";
 import { PostCodeRequest, PostListItem, PostWithRelations, PropertyBag } from "@/types/postCode";
 import { CodeStatus, Languages } from "@generated/prisma/client";
 import status from "http-status";
 import { Session } from "next-auth";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 
 export class PostCodeServiceError extends Error {
   constructor(
@@ -44,12 +45,18 @@ function getTagsFromBody(tags: string[]): { tagInNumber: number[], newtag: strin
 }
 
 
+export const postsCacheTag = () => "posts";
+
 export async function createPost(postcode: PostCodeRequest, tags: string[]) {
   try {
     const postid = await createPostReview(postcode);
+    revalidateTag(postsCacheTag(), "max");
 
     const { tagInNumber, newtag } = getTagsFromBody(tags);
     const newlyAddedTagsid = await createTags(newtag);
+    if (newtag.length > 0) {
+      revalidateTag(tagsCacheTag(), "max");
+    }
 
     await assignTagToPost([...tagInNumber, ...newlyAddedTagsid], postid);
 
@@ -149,7 +156,7 @@ async function validatePostFromFormData(postbody: FormData, userId: string): Pro
   }
   return {
     title: title,
-    description: String(description),
+    description: description ?? null,
     authorId: userId,
     blobName: objectname ?? null,
     code: code,
@@ -195,6 +202,7 @@ export async function getPost(
 ): Promise<PostListItem[]> {
   "use cache";
   cacheLife("minutes");
+  cacheTag(postsCacheTag());
   try {
     return await getPosts(skip, take, userid, sort, statusfilter);
   } catch (error) {
@@ -222,6 +230,7 @@ export async function deletePost(postId: string, userid: string) {
     if (deleted.id && deleted.blobName) {
       await deleteFile(deleted.blobName)
     }
+    revalidateTag(postsCacheTag(), "max");
     return deleted;
   } catch (error) {
     console.error(error);
@@ -291,6 +300,7 @@ export async function updatePost(postId: string, postcode: PostCodeRequest, tags
     // Add the new Tags
     if (newtag.length > 0) {
       const newlyAddedTagsid = await createTags(newtag);
+      revalidateTag(tagsCacheTag(), "max");
       tagsToAdd.push(...newlyAddedTagsid)
     }
 
@@ -303,6 +313,7 @@ export async function updatePost(postId: string, postcode: PostCodeRequest, tags
     if (tagsToAdd.length > 0)
       await assignTagToPost(tagsToAdd, postId)
 
+    revalidateTag(postsCacheTag(), "max");
     return await updatePostReview(postcode, postId);
   } catch (error) {
     console.error(error);
@@ -324,6 +335,8 @@ export async function updatePostStatus(postId: string, postStatus: CodeStatus, u
   else if (posttoupdate.authorId !== user.user.id) {
     throw new PostCodeServiceError("Unauthorized to update status of this post", status.UNAUTHORIZED);
   }
+
+  revalidateTag(postsCacheTag(), "max");
 
   return await updatePostReview({
     title: posttoupdate.title,

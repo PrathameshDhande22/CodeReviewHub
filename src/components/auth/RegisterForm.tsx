@@ -38,7 +38,7 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterInputs>({
     shouldFocusError: true,
     mode: "onTouched",
@@ -183,9 +183,12 @@ const RegisterForm = () => {
           <div>
             <button
               type="submit"
-              className={`${space_grotesk.className} text-black w-full py-4 rounded-xs bg-linear-to-r from-primary to-primary-dark space-x-3 font-bold cursor-pointer`}
+              disabled={isSubmitting}
+              className={`${space_grotesk.className} cursor-pointer text-black w-full py-4 rounded-xs bg-linear-to-r from-primary to-primary-dark space-x-3 font-bold disabled:opacity-50`}
             >
-              <span>Create Account</span>
+              <span>
+                {isSubmitting ? "Creating account..." : "Create Account"}
+              </span>
               <FaArrowRight className="inline-block" size={15} />
             </button>
           </div>

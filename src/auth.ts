@@ -118,7 +118,7 @@ export const authOptions: AuthOptions = {
     },
   },
 
-  debug: true,
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

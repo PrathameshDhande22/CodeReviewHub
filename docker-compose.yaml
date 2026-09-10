@@ -2,7 +2,7 @@ name: CodeReviewHub
 
 services:
   codereviewhub:
-    image: 241785579803.dkr.ecr.ap-south-1.amazonaws.com/codereviewhub
+    image: 241785579803.dkr.ecr.ap-south-1.amazonaws.com/codereviewhub:1.0.0
     pull_policy: always
     container_name: codereviewhub
     restart: unless-stopped

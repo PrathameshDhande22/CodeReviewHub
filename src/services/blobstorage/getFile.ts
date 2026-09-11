@@ -1,6 +1,23 @@
 import { BucketName } from "@/types";
 import { S3Client } from "./client";
 
+
+export const getPresignedUrl = async (bucket: BucketName, objectName: string, expirySeconds: number = 3600): Promise<string> => {
+    const exists = await S3Client.bucketExists(bucket);
+    if (!exists) {
+        console.log("Bucket does not exist");
+        throw new Error(`Bucket ${bucket} does not exist`);
+    }
+
+    try {
+        const presignedUrl = await S3Client.presignedGetObject(bucket, objectName, expirySeconds);
+        return presignedUrl;
+    } catch (error) {
+        console.error("Error generating presigned URL:", error);
+        throw error;
+    }
+};
+
 export const getFileContent = async (blobname: string, bucket: BucketName = "codefiles") => {
     const exists = await S3Client.bucketExists(bucket);
     if (!exists) {

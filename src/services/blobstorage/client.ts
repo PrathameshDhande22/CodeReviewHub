@@ -6,4 +6,5 @@ export const S3Client: minio.Client = new minio.Client({
   port: Number(process.env.MINIO_PORT),
   secretKey: String(process.env.MINIO_SECRET_KEY),
   useSSL: process.env.MINIO_USE_SSL === "true",
+  region: String(process.env.MINIO_REGION),
 });

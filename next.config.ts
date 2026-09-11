@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   typedRoutes: true,
   cacheComponents: true,
-  compiler: {
-    removeConsole:true,
-  },
 };
 
 export default nextConfig;

@@ -1,6 +1,6 @@
 import { getReputations, getUserReputation, getUserStats } from "@/db/reputation.repo";
 import { getUser, updateUserProfile } from "@/db/user.repo";
-import { deleteFile, getPublicUrl, uploadFile } from "@/services/blobstorage";
+import { deleteFile, getPresignedUrl, uploadFile } from "@/services/blobstorage";
 import { UserDashboard } from "@/types/profile";
 import { User } from "@generated/prisma/client";
 import status from "http-status";
@@ -109,7 +109,7 @@ export async function updateProfileService(
 
       const objectName = `${userId}/profile.png`;
       await uploadFile(userId, objectName, imageFile, "profile-images");
-      updateData.image = getPublicUrl("profile-images", objectName);
+      updateData.image = await getPresignedUrl("profile-images", objectName);
     }
 
     const updatedUser = await updateUserProfile(userId, updateData);

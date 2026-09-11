@@ -46,7 +46,7 @@ services:
       - traefik.http.routers.codereviewhub.entrypoints=https
       - traefik.http.routers.codereviewhub.tls=true
       - traefik.http.routers.codereviewhub.tls.certresolver=spaceship
-      - traefik.http.router.middlewares=codereviewhub-middleware
+      - traefik.http.routers.middlewares=codereviewhub-middleware
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.average=40
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.period=1s
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.burst=20

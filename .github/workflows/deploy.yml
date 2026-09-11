@@ -2,11 +2,9 @@ name: Deploy
 run-name: Deploy Application - ${{github.run_number}}
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: Version of the CodeReviewhub to deploy
-        required: true
-        type: string
+  workflow_run: 
+    workflows: [Build and Push docker Image]
+    types: completed
 concurrency:
   group: codereviewhub-deploy
   cancel-in-progress: true

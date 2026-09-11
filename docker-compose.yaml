@@ -26,6 +26,7 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_REGION=ap-south-1
       - MINIO_PORT=443
       - MINIO_USE_SSL=true
       - SMTP_HOST=smtp.resend.com

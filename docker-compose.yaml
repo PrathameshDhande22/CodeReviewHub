@@ -47,10 +47,11 @@ services:
       - traefik.http.routers.codereviewhub.entrypoints=https
       - traefik.http.routers.codereviewhub.tls=true
       - traefik.http.routers.codereviewhub.tls.certresolver=spaceship
-      - traefik.http.routers.middlewares=codereviewhub-middleware
+      - traefik.http.routers.middlewares=codereviewhub-middleware,codereviewhub-requestsize
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.average=40
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.period=1s
       - traefik.http.middlewares.codereviewhub-middleware.ratelimit.burst=20
+      - traefik.http.middlewares.codereviewhub-requestsize.buffering.maxRequestBodyBytes=104857600
 
 networks:
   proxy:

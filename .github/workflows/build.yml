@@ -9,9 +9,12 @@ on:
         type: string
   push:
     tags: "*"
-concurrency: 
-    group: codereview-build
-    cancel-in-progress: true
+concurrency:
+  group: codereview-build
+  cancel-in-progress: true
+
+env:
+  APPLICATION_VERSION: ${{inputs.version || github.ref_name}}
 jobs:
   build-date:
     name: Generate Build Date for Image
@@ -51,13 +54,28 @@ jobs:
       - name: Build and Push the Image to ECR
         id: build-push-image
         uses: docker/build-push-action@v7
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
+          DOCKER_BUILD_SUMMARY: false
         with:
           push: true
           tags: |
-            ${{secrets.ECR_REGISTRY}}/codereviewhub:${{inputs.version || github.ref_name}}
+            ${{secrets.ECR_REGISTRY}}/codereviewhub:${{env.APPLICATION_VERSION}}
             ${{secrets.ECR_REGISTRY}}/codereviewhub:latest
           context: .
           build-args: |
             BUILD_DATE=${{needs.build-date.outputs.image-build-date}}
             VERSION=${{inputs.version || github.ref_name}}
             GIT_SHA=${{github.sha}}
+
+      - name: Build Summary
+        id: build-summary
+        run: |
+          echo "## CodeReviewHub Docker Image" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "CodeReviewHub Docker image built and pushed successfully using GitHub Actions." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image:** CodeReviewHub" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ✅ Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{env.APPLICATION_VERSION }}" >> $GITHUB_STEP_SUMMARY
